@@ -16,6 +16,9 @@ export const QUERY: TypedDocumentNode<
   query FindUserScheduleDayQuery2($id: Int!) {
     userScheduleDay: userScheduleDay(id: $id) {
       id
+      day
+      partOfDay
+      preference
     }
   }
 `

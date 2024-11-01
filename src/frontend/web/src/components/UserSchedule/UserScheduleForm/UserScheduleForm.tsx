@@ -13,6 +13,7 @@ import {
   DatetimeLocalField,
   Submit,
 } from '@redwoodjs/forms'
+import {WeeklyScheduleComponent} from "src/components/weekly-schedule"
 
 const formatDatetime = (value) => {
   if (value) {
@@ -35,8 +36,11 @@ const UserScheduleForm = (props: UserScheduleFormProps) => {
   }
 
   return (
-    <div className="rw-form-wrapper">
-      <Form<FormUserSchedule> onSubmit={onSubmit} error={props.error}>
+    <>
+      <WeeklyScheduleComponent></WeeklyScheduleComponent>
+
+      <div className="rw-form-wrapper">
+      <Form<FormUserSchedule> hidden={true} onSubmit={onSubmit} error={props.error}>
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
@@ -87,6 +91,7 @@ const UserScheduleForm = (props: UserScheduleFormProps) => {
         </div>
       </Form>
     </div>
+    </>
   )
 }
 

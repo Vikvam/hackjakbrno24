@@ -26,18 +26,6 @@ const Routes = () => {
         <Route path="/user-schedules/{id:Int}" page={UserScheduleUserSchedulePage} name="userSchedule" />
         <Route path="/user-schedules" page={UserScheduleUserSchedulesPage} name="userSchedules" />
       </Set>
-      <Set wrap={ScaffoldLayout} title="Users" titleTo="users" buttonLabel="New User" buttonTo="newUser">
-      </Set>
-      <Set wrap={ScaffoldLayout} title="Users" titleTo="users" buttonLabel="New User" buttonTo="newUser">
-      </Set>
-      <Set wrap={ScaffoldLayout} title="UserScheduleDays" titleTo="userScheduleDays" buttonLabel="New UserScheduleDay" buttonTo="newUserScheduleDay">
-      </Set>
-      <Set wrap={ScaffoldLayout} title="Users" titleTo="users" buttonLabel="New User" buttonTo="newUser">
-      </Set>
-      <Set wrap={ScaffoldLayout} title="UserSchedules" titleTo="userSchedules" buttonLabel="New UserSchedule" buttonTo="newUserSchedule">
-      </Set>
-      <Set wrap={ScaffoldLayout} title="UserSchedules" titleTo="userSchedules" buttonLabel="New UserSchedule" buttonTo="newUserSchedule">
-      </Set>
       <Route notfound page={NotFoundPage} />
     </Router>
   )
