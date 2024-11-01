@@ -38,6 +38,10 @@ model UserScheduleDay {
   userSchedule   UserSchedule @relation(fields: [userScheduleId], references: [id])
   user           User         @relation(fields: [userScheduleId], references: [id])
   day            DateTime
+  dayPart        Int
+  preference     Int
+  reasonCode     Int
+  reasonText     String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 }

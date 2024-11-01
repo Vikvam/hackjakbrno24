@@ -14,6 +14,7 @@
       "../.redwood/types/mirror/api/src"
     ],
     "paths": {
+      "@/*": ["./src/*"],
       "src/*": [
         "./src/*",
         "../.redwood/types/mirror/web/src/*",
@@ -22,7 +23,7 @@
       ],
       "$api/*": ["../api/*"],
       "types/*": ["./types/*", "../types/*"],
-      "@redwoodjs/testing": ["../node_modules/@redwoodjs/testing/web"]
+      "@redwoodjs/testing": ["../node_modules/@redwoodjs/testing/web"],
     },
     "typeRoots": [
       "../node_modules/@types",

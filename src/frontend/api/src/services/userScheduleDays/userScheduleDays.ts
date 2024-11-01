@@ -48,3 +48,17 @@ export const UserScheduleDay: UserScheduleDayRelationResolvers = {
     return db.userScheduleDay.findUnique({ where: { id: root?.id } }).user()
   },
 }
+
+export const userScheduleDayByDayAndPartOfDay = ({
+  day,
+  partOfDay,
+}) => {
+  return db.userScheduleDay.findFirst({
+    where: {
+      AND: [
+        { dayPart: partOfDay,
+          day: day }
+      ]
+    }
+  })
+}
