@@ -52,6 +52,7 @@ interface UserScheduleFormProps {
   onSave: (data: UpdateUserScheduleInput, id?: FormUserSchedule['id']) => void
   error: RWGqlError
   loading: boolean
+  edit: boolean
 }
 
 const UserScheduleForm = (props: UserScheduleFormProps) => {
@@ -65,7 +66,6 @@ const UserScheduleForm = (props: UserScheduleFormProps) => {
         schedData[key] = data[key]
       }
     }
-    props.onSave(schedData, props?.userSchedule?.id)
     let date = new Date()
     let dateStr = date.toISOString()
     console.log(dateStr, "date is")
@@ -104,13 +104,14 @@ const UserScheduleForm = (props: UserScheduleFormProps) => {
 
 
   }
-
+  console.log("Edit is", props.edit)
   return (
     <>
-
       <div className="rw-form-wrapper">
+        <h1 className={"header"} hidden={!props.edit}>Editace</h1>
+        <h1 className={"header"} hidden={props.edit}>Show</h1>
         <Form<FormUserSchedule> hidden={false} onSubmit={onSubmit} error={props.error}>
-          <WeeklyScheduleComponent></WeeklyScheduleComponent>
+          <WeeklyScheduleComponent edit={props.edit}></WeeklyScheduleComponent>
           <FormError
             error={props.error}
             wrapperClassName="rw-form-error-wrapper"

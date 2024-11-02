@@ -43,20 +43,23 @@ export const Failure = ({
 )
 
 export const Success = ({
-  userScheduleDay,
+  userScheduleDay, ...props
 }: CellSuccessProps<
   FindUserScheduleDayQuery2,
   FindUserScheduleDayQuery2Variables
 >) => {
   return <div>
     {/*{<Form onSubmit={onSubmit}>*/}
-    <SelectField name={"select-" + userScheduleDay.dayIndex + userScheduleDay.part} validation={{valueAsNumber: true}}>
+    <SelectField hidden={!props.edit} name={"select-" + userScheduleDay.dayIndex + userScheduleDay.part} validation={{valueAsNumber: true}}>
       <option value={1}>jako silne chcu</option>
       <option value={2}>chcu</option>
       <option value={3}>jedno jako</option>
       <option value={4}>nechcu</option>
       <option value={5}>jako vubec nechcu</option>
     </SelectField>
+    <div hidden={props.edit}>
+      {userScheduleDay.preference}
+    </div>
     <FieldError name="selectSingle" style={{color: 'red'}}/>
     {/*</Form>}*/}
   </div>
