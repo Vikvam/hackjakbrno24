@@ -12,5 +12,6 @@ class ShiftConstraintConfiguration:
 
     # Medium constraints
     over_required_shift_amount: HardMediumSoftScore = HardMediumSoftScore.of_medium(10)
+    under_required_shift_amount: HardMediumSoftScore = HardMediumSoftScore.of_medium(1)
 
     # Soft constraints
