@@ -1,4 +1,5 @@
 import calendar
+import random
 from datetime import date
 from timefold.solver import (
     SolverFactory,
@@ -13,6 +14,7 @@ from src.solver.solution import *
 
 
 if __name__ == "__main__":
+    random.seed(42)
     YEAR = 2024
     MONTH = 11
 
@@ -22,19 +24,19 @@ if __name__ == "__main__":
         if date.month != MONTH: continue
         if date.weekday() > 4:
             doctor_shifts.extend([
-                ShiftDetails(ShiftDatetype(date, ShiftType.WEEKEND_MORNING), Department.RTG, 1, Qualifications.L2),
-                ShiftDetails(ShiftDatetype(date, ShiftType.WEEKEND_EVENING), Department.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.WEEKEND_MORNING), Department.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.WEEKEND_EVENING), Department.RTG, 1, Qualifications.L2),
             ])
             for shift_type in ShiftType.weekendrange():
                 shift_availabilities[ShiftDatetype(date, shift_type)] = None
         else:
             doctor_shifts.extend([
-                ShiftDetails(ShiftDatetype(date, ShiftType.MORNING), Department.RTG, 1, Qualifications.L3),
-                ShiftDetails(ShiftDatetype(date, ShiftType.MORNING), Department.RTG, 1, Qualifications.L2),
-                ShiftDetails(ShiftDatetype(date, ShiftType.AFTERNOON), Department.RTG, 1, Qualifications.L2),
-                ShiftDetails(ShiftDatetype(date, ShiftType.OVERNIGHT), Department.RTG, 1, Qualifications.L2),
-                ShiftDetails(ShiftDatetype(date, ShiftType.MORNING), Department.RTG, 3, None),
-                ShiftDetails(ShiftDatetype(date, ShiftType.AFTERNOON), Department.RTG, 2, None),
+                Shift(ShiftDatetype(date, ShiftType.MORNING), Department.RTG, 1, Qualifications.L3),
+                Shift(ShiftDatetype(date, ShiftType.MORNING), Department.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.AFTERNOON), Department.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.OVERNIGHT), Department.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.MORNING), Department.RTG, 3, None),
+                Shift(ShiftDatetype(date, ShiftType.AFTERNOON), Department.RTG, 2, None),
             ])
             for shift_type in ShiftType.weekdayrange():
                 shift_availabilities[ShiftDatetype(date, shift_type)] = None
@@ -47,5 +49,13 @@ if __name__ == "__main__":
             {Department.RTG: .5, Department.CT: .5},
             {datetype: Availability.random() for datetype in shift_availabilities},
             Qualifications.L3,
-        ) for i in range(5)
+            None,
+            None
+        ) for i in range(10)
     ]
+
+    problem = ShiftsSchedule(doctors, doctor_shifts, doctor_assignments)
+
+    solution, score_analysis = solve(problem)
+    print(solution)
+    print(score_analysis.summary)

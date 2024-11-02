@@ -18,7 +18,7 @@ from src.solver.enums import *
 
 
 # Problem Facts
-@dataclass
+@dataclass(frozen=True)
 class ShiftDatetype:
     date: date
     type: ShiftType
@@ -41,9 +41,17 @@ class ShiftDatetype:
         else: return float("inf")
         return (snd_start - fst_end).total_seconds() / 3600
 
+    def __hash__(self):
+        return hash((self.date, self.type))
 
-@dataclass
-class ShiftDetails:
+    def __eq__(self, other):
+        if not isinstance(other, ShiftDatetype):
+            return NotImplemented
+        return self.date == other.date and self.type == other.type
+
+
+@dataclass(frozen=True)
+class Shift:
     id: Annotated[UUID, PlanningId] = field(
         default_factory=uuid4,
         init=False
@@ -53,17 +61,28 @@ class ShiftDetails:
     amount: int
     qualification: Optional[Qualifications]
 
+    @property
+    def date(self) -> date:
+        return self.datetype.date
 
-@dataclass
+    @property
+    def type(self) -> ShiftType:
+        return self.datetype.type
+
+    def __sub__(self, other):
+        return self.date - other.date
+
+
+@dataclass(frozen=True)
 class Employee:
     name: Annotated[str, PlanningId]
     department_preference: dict[Department, float]
     shift_availability: dict[ShiftDatetype, Availability]
 
 
-@dataclass
+@dataclass(frozen=True)
 class Doctor(Employee):
-    stem: Stems
+    stem: Optional[Stems]
     atestation: Optional[Atestations]
     qualifications: Optional[Qualifications]
 
@@ -76,15 +95,42 @@ class ShiftAssignment:
         default_factory=uuid4,
         init=False
     )
-    shift: ShiftDetails
+    shift: Shift
     employee: Annotated[Employee | None, PlanningVariable] = field(default=None)
 
 
 # Planning Solution
 @planning_solution
 @dataclass
-class ShiftsSolution:
-    shifts: Annotated[List[ShiftDetails], PlanningEntityCollectionProperty] = field(default_factory=list)
-    employees: Annotated[List[Employee], ProblemFactCollectionProperty, ValueRangeProvider] = field(default_factory=list)
-    availabilities: Annotated[List[Availability], ProblemFactCollectionProperty, ValueRangeProvider] = field(default_factory=list)
-    planning_score: Annotated[HardMediumSoftScore, PlanningScore] = field(default=None)
+class ShiftsSchedule:
+    # Problem facts
+    employees: Annotated[
+        List[Employee],
+        ProblemFactCollectionProperty,
+        ValueRangeProvider
+    ] = field(default_factory=list)
+
+    shifts: Annotated[
+        List[Shift],
+        ProblemFactCollectionProperty
+    ] = field(default_factory=list)
+
+    # Planning entities
+    shift_assignments: Annotated[
+        List[ShiftAssignment],
+        PlanningEntityCollectionProperty
+    ] = field(default_factory=list)
+
+    # Score
+    score: Annotated[
+        HardMediumSoftScore,
+        PlanningScore
+    ] = field(default=None)
+
+    def __str__(self) -> str:
+        return (
+            f"ShiftSchedule(assignments={len(self.shift_assignments)}, "
+            f"employees={len(self.employees)}, "
+            f"shifts={len(self.shifts)}, "
+            f"score={self.score})"
+        )

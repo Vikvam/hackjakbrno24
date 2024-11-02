@@ -11,37 +11,22 @@ from src.solver.enums import *
 from src.solver.constraints import define_constraints
 
 
-def explain(explanation: ScoreExplanation) -> None:
-    """
-    Print detailed explanation of the solution score.
-    """
-    print("\nSolution Explanation:")
-    print(f"Score: {explanation.score}")
-
-    print("\nConstraint Matches:")
-    for match in explanation.constraint_matches:
-        print(f"\n{match.constraint_name}:")
-        print(f"  Impact: {match.score}")
-        print(f"  Justification: {match.justification}")
-
-    print("\nIndividual Constraint Scores:")
-    for constraint in explanation.constraint_matches_by_constraint_name:
-        total_score = sum(
-            match.score.hard() for match in
-            explanation.constraint_matches_by_constraint_name[constraint]
-        )
-        print(f"{constraint}: {total_score}")
-
-
-def solve(problem: ShiftsSolution):
+def solve(problem: ShiftsSchedule):
     solver_config = SolverConfig(
-        solution_class=ShiftsSolution,
-        entity_class_list=[ShiftDetails],
+        solution_class=ShiftsSchedule,
+        entity_class_list=[ShiftAssignment],
         score_director_factory_config=ScoreDirectorFactoryConfig(
             constraint_provider_function=define_constraints
         ),
         termination_config=TerminationConfig(
-            spent_limit=Duration(minutes=5)  # Adjust timeout as needed
+            spent_limit=Duration(
+                minutes=0,
+                seconds=30,
+            ),
+            unimproved_spent_limit=Duration(
+                seconds=10
+            ),
+            # best_score_limit=HardMediumSoftScore.of(0, 0, 0),
         )
     )
 
@@ -54,6 +39,6 @@ def solve(problem: ShiftsSolution):
     solution = solver.solve(problem)
 
     # Explain solution
-    explanation = solution_manager.explain(solution)
+    score_analysis = solution_manager.analyze(solution)
 
-    return solution, explanation
+    return solution, score_analysis
