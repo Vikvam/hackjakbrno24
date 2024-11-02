@@ -87,6 +87,7 @@ export const Success = ({
           onSave={onSave}
           error={error}
           loading={loading}
+          edit={true}
         />
       </div>
     </div>
