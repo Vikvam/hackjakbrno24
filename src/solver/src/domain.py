@@ -64,7 +64,7 @@ class Shift:
         init=False
     )
     datetype: ShiftDatetype
-    department: Department
+    department: Departments
     amount: int
     qualification: Optional[Qualifications]
 
@@ -94,7 +94,7 @@ class Shift:
 @dataclass(frozen=True)
 class Employee:
     name: Annotated[str, PlanningId]
-    department_preference: dict[Department, int]
+    department_preference: dict[Departments, float]
     shift_amounts: dict[ShiftType, int]
     shift_availability: dict[ShiftDatetype, Availability]
 

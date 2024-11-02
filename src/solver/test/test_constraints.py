@@ -187,3 +187,30 @@ class TestConstraints:
         (constraint_verifier.verify_that(availability_impossible)
             .given(*assignments)
             .penalizes(1))
+
+    def test_department_desired_no_violation(self, constraint_verifier):
+        test_employee = create_employee()
+
+        assignments = [
+            ShiftAssignment(create_shift(department=Departments.RTG), test_employee),
+            ShiftAssignment(create_shift(department=Departments.RTG), test_employee),
+            ShiftAssignment(create_shift(department=Departments.CT), test_employee),
+        ]
+
+        (constraint_verifier.verify_that(department_desired)
+            .given(*assignments)
+            .penalizes(0))
+
+    def test_department_desired_violation(self, constraint_verifier):
+        test_employee = create_employee()
+
+        assignments = [
+            ShiftAssignment(create_shift(department=Departments.RTG), test_employee),
+            ShiftAssignment(create_shift(department=Departments.RTG), test_employee),
+            ShiftAssignment(create_shift(department=Departments.RTG), test_employee),
+            ShiftAssignment(create_shift(department=Departments.CT), test_employee),
+        ]
+
+        (constraint_verifier.verify_that(department_desired)
+            .given(*assignments)
+            .penalizes(1))

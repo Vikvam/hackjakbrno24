@@ -59,7 +59,7 @@ class ShiftType(Enum):
         return self == ShiftType.OVERNIGHT or self == ShiftType.WEEKEND_EVENING
 
 
-class Department(Enum):
+class Departments(Enum):
     RTG = auto()
     CT = auto()
 

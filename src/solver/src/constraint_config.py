@@ -16,7 +16,8 @@ class ShiftConstraintConfiguration:
     # Medium constraints
     over_required_shift_amount: HardMediumSoftScore = HardMediumSoftScore.of_medium(100)
     under_required_shift_amount: HardMediumSoftScore = HardMediumSoftScore.of_medium(1)
-    availability_undesired: HardMediumSoftScore = HardMediumSoftScore.of_medium(50)
-    availability_desired: HardMediumSoftScore = HardMediumSoftScore.of_medium(50)
+    availability_undesired: HardMediumSoftScore = HardMediumSoftScore.of_medium(5)
+    availability_desired: HardMediumSoftScore = HardMediumSoftScore.of_medium(5)
 
     # Soft constraints
+    department_desired: HardMediumSoftScore = HardMediumSoftScore.of_soft(50)

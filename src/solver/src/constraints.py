@@ -25,10 +25,11 @@ def define_constraints(constraint_factory: ConstraintFactory) -> list[Constraint
         # weekend_shift_amount(constraint_factory),
         # fair_shift_amount(constraint_factory),
         # fair_shift_type(constraint_factory),
-        # availability_impossible(constraint_factory),
-        # availability_necessary(constraint_factory),
-        # availability_undesired(constraint_factory),
-        # availability_desired(constraint_factory),
+        availability_impossible(constraint_factory),
+        availability_necessary(constraint_factory),
+        availability_undesired(constraint_factory),
+        availability_desired(constraint_factory),
+        department_desired(constraint_factory)
     ]
 
 
@@ -178,16 +179,25 @@ def availability_desired(constraint_factory: ConstraintFactory) -> Constraint:
     )
 
 
-# def department_desired(constraint_factory: ConstraintFactory) -> Constraint:
-#     return (
-#         constraint_factory
-#         .for_each(ShiftAssignment)
-#         .group_by(
-#             lambda assignment: assignment.employee,
-#             lambda assignment: assignment.shift.department,
-#             ConstraintCollectors.count()
-#         )
-#         .filter(lambda assignment: assignment.employee.shift_availability[assignment.shift.datetype] == Availability.DESIRED)
-#         .penalize(ShiftConstraintConfiguration.department_desired)
-#         .as_constraint("department_desired")
-#     )
+def department_desired(constraint_factory: ConstraintFactory) -> Constraint:
+    def in_tolerance(employee, assignments) -> bool:
+        counts = {department: 0 for department in employee.department_preference.keys()}
+        for assignment in assignments:
+            counts[assignment.shift.department] += 1
+        for department in employee.department_preference.keys():
+            diff = abs((counts[department] / len(assignments)) - employee.department_preference[department])
+            diff /= len(counts)
+            if diff > .1: return True
+        return False
+
+    return (
+        constraint_factory
+        .for_each(ShiftAssignment)
+        .group_by(
+            lambda assignment: assignment.employee,
+            ConstraintCollectors.to_list()
+        )
+        .filter(in_tolerance)
+        .penalize(ShiftConstraintConfiguration.department_desired)
+        .as_constraint("department_desired")
+    )
