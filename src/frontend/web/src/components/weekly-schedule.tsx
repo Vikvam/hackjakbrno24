@@ -36,7 +36,7 @@ export function WeeklyScheduleComponent(props) {
               <TableCell className="font-medium">{part}</TableCell>
               {nextWeekDates.map((_, dayIndex) => (
                 <TableCell key={dayIndex} className="text-center">
-                  <UserScheduleDay id={props.id} part={part} dayIndex={dayIndex}></UserScheduleDay>
+                  <UserScheduleDay id={1} part={part} dayIndex={dayIndex}></UserScheduleDay>
                 </TableCell>
               ))}
             </TableRow>

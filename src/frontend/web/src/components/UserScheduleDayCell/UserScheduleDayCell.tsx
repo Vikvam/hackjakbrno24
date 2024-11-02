@@ -10,6 +10,7 @@ export const QUERY: TypedDocumentNode<
   query FindUserScheduleDayQuery2($id: Int!) {
     userScheduleDay: userScheduleDay(id: $id) {
       id
+      userId
       day
       dayPart
       preference
@@ -47,5 +48,16 @@ export const Success = ({
   FindUserScheduleDayQuery2,
   FindUserScheduleDayQuery2Variables
 >) => {
-  return <div>{JSON.stringify(userScheduleDay.preference)}</div>
+  return <div>
+    {/*{<Form onSubmit={onSubmit}>*/}
+    <SelectField name={"select-" + userScheduleDay.dayIndex + userScheduleDay.part} validation={{valueAsNumber: true}}>
+      <option value={1}>jako silne chcu</option>
+      <option value={2}>chcu</option>
+      <option value={3}>jedno jako</option>
+      <option value={4}>nechcu</option>
+      <option value={5}>jako vubec nechcu</option>
+    </SelectField>
+    <FieldError name="selectSingle" style={{color: 'red'}}/>
+    {/*</Form>}*/}
+  </div>
 }
