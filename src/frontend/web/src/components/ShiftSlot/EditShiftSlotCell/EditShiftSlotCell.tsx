@@ -20,10 +20,7 @@ export const QUERY: TypedDocumentNode<EditShiftSlotById> = gql`
     shiftSlot: shiftSlot(id: $id) {
       id
       date
-      type
-      department
-      amount
-      qualification
+      shiftId
     }
   }
 `
@@ -36,10 +33,7 @@ const UPDATE_SHIFT_SLOT_MUTATION: TypedDocumentNode<
     updateShiftSlot(id: $id, input: $input) {
       id
       date
-      type
-      department
-      amount
-      qualification
+      shiftId
     }
   }
 `

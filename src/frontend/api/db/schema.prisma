@@ -57,6 +57,7 @@ model UserScheduleDay {
 model Shift {
   id            Int         @id @default(autoincrement())
   type          String
+  employeeType  String
   department    String
   amount        Int
   qualification String

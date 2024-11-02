@@ -1,4 +1,8 @@
-import type { QueryResolvers, MutationResolvers } from 'types/graphql'
+import type {
+  QueryResolvers,
+  MutationResolvers,
+  ShiftSlotRelationResolvers,
+} from 'types/graphql'
 
 import { db } from 'src/lib/db'
 
@@ -36,4 +40,10 @@ export const deleteShiftSlot: MutationResolvers['deleteShiftSlot'] = ({
   return db.shiftSlot.delete({
     where: { id },
   })
+}
+
+export const ShiftSlot: ShiftSlotRelationResolvers = {
+  shift: (_obj, { root }) => {
+    return db.shiftSlot.findUnique({ where: { id: root?.id } }).shift()
+  },
 }

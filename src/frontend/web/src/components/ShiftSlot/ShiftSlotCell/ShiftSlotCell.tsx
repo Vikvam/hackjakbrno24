@@ -19,10 +19,7 @@ export const QUERY: TypedDocumentNode<
     shiftSlot: shiftSlot(id: $id) {
       id
       date
-      type
-      department
-      amount
-      qualification
+      shiftId
     }
   }
 `

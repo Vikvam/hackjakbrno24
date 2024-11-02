@@ -15,6 +15,18 @@ import MainLayout from "src/layouts/MainLayout/MainLayout";
 const Routes = () => {
   return (
     <Router>
+      <Set wrap={ScaffoldLayout} title="ShiftSlots" titleTo="shiftSlots" buttonLabel="New ShiftSlot" buttonTo="newShiftSlot">
+        <Route path="/shift-slots/new" page={ShiftSlotNewShiftSlotPage} name="newShiftSlot" />
+        <Route path="/shift-slots/{id:Int}/edit" page={ShiftSlotEditShiftSlotPage} name="editShiftSlot" />
+        <Route path="/shift-slots/{id:Int}" page={ShiftSlotShiftSlotPage} name="shiftSlot" />
+        <Route path="/shift-slots" page={ShiftSlotShiftSlotsPage} name="shiftSlots" />
+      </Set>
+      <Set wrap={ScaffoldLayout} title="Shifts" titleTo="shifts" buttonLabel="New Shift" buttonTo="newShift">
+        <Route path="/shifts/new" page={ShiftNewShiftPage} name="newShift" />
+        <Route path="/shifts/{id:Int}/edit" page={ShiftEditShiftPage} name="editShift" />
+        <Route path="/shifts/{id:Int}" page={ShiftShiftPage} name="shift" />
+        <Route path="/shifts" page={ShiftShiftsPage} name="shifts" />
+      </Set>
       <Set wrap={MainLayout}>
         <Route path="/define-shifts" page={DefineShiftsPage} name="defineShifts"/>
         <Route path="/search-users" page={SearchUsersPage} name="searchUsers"/>
