@@ -38,7 +38,7 @@ export const deleteUserScheduleDay: MutationResolvers['deleteUserScheduleDay'] =
     })
   }
 
-export const UserScheduleDay: UserScheduleDayRelationResolvers = {
+export const serScheduleDay: UserScheduleDayRelationResolvers = {
   userSchedule: (_obj, { root }) => {
     return db.userScheduleDay
       .findUnique({ where: { id: root?.id } })
@@ -49,16 +49,13 @@ export const UserScheduleDay: UserScheduleDayRelationResolvers = {
   },
 }
 
-export const userScheduleDayByDayAndPartOfDay = ({
-  day,
-  partOfDay,
-}) => {
+export const userScheduleByDayAndPart = (day: Date, dayPart: number) => {
   return db.userScheduleDay.findFirst({
     where: {
       AND: [
-        { dayPart: partOfDay,
-          day: day }
+        { day: { equals: day } },
+        { dayPart: { equals: dayPart } },
       ]
-    }
+    },
   })
 }

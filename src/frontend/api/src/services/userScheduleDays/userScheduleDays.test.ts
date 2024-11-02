@@ -42,16 +42,24 @@ describe('userScheduleDays', () => {
     const result = await createUserScheduleDay({
       input: {
         userScheduleId: scenario.userScheduleDay.two.userScheduleId,
-        day: '2024-11-01T22:36:53.101Z',
-        updatedAt: '2024-11-01T22:36:53.101Z',
+        day: '2024-11-02T08:47:31.333Z',
+        dayPart: 1199637,
+        preference: 47015,
+        reasonCode: 93091,
+        reasonText: 'String',
+        updatedAt: '2024-11-02T08:47:31.333Z',
       },
     })
 
     expect(result.userScheduleId).toEqual(
       scenario.userScheduleDay.two.userScheduleId
     )
-    expect(result.day).toEqual(new Date('2024-11-01T22:36:53.101Z'))
-    expect(result.updatedAt).toEqual(new Date('2024-11-01T22:36:53.101Z'))
+    expect(result.day).toEqual(new Date('2024-11-02T08:47:31.333Z'))
+    expect(result.dayPart).toEqual(1199637)
+    expect(result.preference).toEqual(47015)
+    expect(result.reasonCode).toEqual(93091)
+    expect(result.reasonText).toEqual('String')
+    expect(result.updatedAt).toEqual(new Date('2024-11-02T08:47:31.333Z'))
   })
 
   scenario('updates a userScheduleDay', async (scenario: StandardScenario) => {
@@ -60,10 +68,10 @@ describe('userScheduleDays', () => {
     })) as UserScheduleDay
     const result = await updateUserScheduleDay({
       id: original.id,
-      input: { day: '2024-11-02T22:36:53.101Z' },
+      input: { day: '2024-11-03T08:47:31.334Z' },
     })
 
-    expect(result.day).toEqual(new Date('2024-11-02T22:36:53.101Z'))
+    expect(result.day).toEqual(new Date('2024-11-03T08:47:31.334Z'))
   })
 
   scenario('deletes a userScheduleDay', async (scenario: StandardScenario) => {
