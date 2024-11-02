@@ -3,12 +3,12 @@ from enum import Enum, auto
 from datetime import time
 
 
-class Stems(Enum):
+class Trunks(Enum):
     RTG = auto()
     CT = auto()
 
 
-class Atestations(Enum):
+class Specialization(Enum):
     INTERNAL = auto()
     ORTHOPEDIC = auto()
     UROLOGY = auto()

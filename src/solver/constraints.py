@@ -19,7 +19,8 @@ def define_constraints(constraint_factory: ConstraintFactory) -> list[Constraint
         no_overlapping_shifts(constraint_factory),
         at_least_12h_rest(constraint_factory),
         at_least_36h_rest_weekly(constraint_factory),
-        # max_shift_amount(constraint_factory),
+        # over_required_shift_amount(constraint_factory),
+        # under_required_shift_amount(constraint_factory),
         # standard_shift_amount(constraint_factory),
         # weekend_shift_amount(constraint_factory),
         # fair_shift_amount(constraint_factory),
@@ -48,7 +49,6 @@ def no_overlapping_shifts(constraint_factory: ConstraintFactory) -> Constraint:
 
 def at_least_12h_rest(constraint_factory: ConstraintFactory) -> Constraint:
     def has_not_12h_rest(assignment1, assignment2) -> bool:
-        print(assignment1.shift.datetype, assignment2.shift.datetype, (assignment1.shift - assignment2.shift), (assignment1.shift - assignment2.shift) < timedelta(hours=12))
         return (assignment1.shift - assignment2.shift) < timedelta(hours=12)
 
     return (
@@ -97,6 +97,28 @@ def at_least_36h_rest_weekly(constraint_factory: ConstraintFactory) -> Constrain
             ConstraintCollectors.to_list()
         )
         .filter(lambda employee, week, assignments: not has_36h_continuous_rest(assignments))
-        .penalize(ShiftConstraintConfiguration.at_least_36h_rest_weekly)
+        .penalize(ShiftConstraintConfiguration.is_illegal)
         .as_constraint("at_least_36h_rest_weekly")
     )
+
+
+def over_required_shift_amount(constraint_factory: ConstraintFactory) -> Constraint:
+    return (
+        constraint_factory
+        .for_each(ShiftAssignment)
+        .group_by(
+            lambda assignment: assignment.employee,
+            lambda assignment: assignment.shift.datetype.type,
+            ConstraintCollectors.count()
+        )
+        .filter(lambda employee, shift_type, count: count > employee.shift_amounts[shift_type])
+        .penalize(
+            ShiftConstraintConfiguration.over_required_shift_amount,
+            lambda employee, shift_type, count: count
+        )
+        .as_constraint("at_least_36h_rest_weekly")
+    )
+
+
+def under_required_shift_amount(constraint_factory: ConstraintFactory) -> Constraint:
+    ...

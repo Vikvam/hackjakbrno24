@@ -94,6 +94,7 @@ class Shift:
 class Employee:
     name: Annotated[str, PlanningId]
     department_preference: dict[Department, float]
+    shift_amounts: dict[ShiftType, int]
     shift_availability: dict[ShiftDatetype, Availability]
 
     def __str__(self):
@@ -102,8 +103,8 @@ class Employee:
 
 @dataclass(frozen=True)
 class Doctor(Employee):
-    stem: Optional[Stems]
-    atestation: Optional[Atestations]
+    stem: Optional[Trunks]
+    specialization: Optional[Specialization]
     qualifications: Optional[Qualifications]
 
 
@@ -116,9 +117,12 @@ class ShiftAssignment:
         init=False
     )
     shift: Shift
-    employee: Annotated[Employee | None, PlanningVariable] = field(default=None)
+    employee: Annotated[Employee, PlanningVariable] = field(default=None)
 
     def __str__(self):
+        return f"<{self.id}, {self.employee}, {self.shift}>"
+
+    def __repr__(self):
         return f"<{self.id}, {self.employee}, {self.shift}>"
 
 
@@ -135,7 +139,8 @@ class ShiftsSchedule:
 
     shifts: Annotated[
         List[Shift],
-        ProblemFactCollectionProperty
+        ProblemFactCollectionProperty,
+        ValueRangeProvider
     ] = field(default_factory=list)
 
     # Planning entities
@@ -151,6 +156,14 @@ class ShiftsSchedule:
     ] = field(default=None)
 
     def __str__(self) -> str:
+        return (
+            f"ShiftSchedule(assignments={len(self.shift_assignments)}, "
+            f"employees={len(self.employees)}, "
+            f"shifts={len(self.shifts)}, "
+            f"score={self.score})"
+        )
+
+    def __repr__(self) -> str:
         return (
             f"ShiftSchedule(assignments={len(self.shift_assignments)}, "
             f"employees={len(self.employees)}, "

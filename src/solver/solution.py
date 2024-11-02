@@ -1,7 +1,6 @@
 from timefold.solver import (
     SolverFactory,
     SolutionManager,
-    Solver
 )
 from timefold.solver.config import SolverConfig, ScoreDirectorFactoryConfig, TerminationConfig, Duration
 from timefold.solver.score import ScoreExplanation
@@ -20,8 +19,8 @@ def solve(problem: ShiftsSchedule):
         ),
         termination_config=TerminationConfig(
             spent_limit=Duration(
-                minutes=0,
-                seconds=10,
+                minutes=2,
+                seconds=30,
             ),
             unimproved_spent_limit=Duration(
                 seconds=10
