@@ -42,7 +42,7 @@ def doctors_mock(YEAR = 2024, MONTH = 11):
             Qualifications.L3,
             None,
             None
-        ) for i in range(10)
+        ) for i in range(15)
     ]
 
     doctor_assignments = [ShiftAssignment(shift, doctors[i % len(doctors)]) for i, shift in enumerate(doctor_shifts) for _ in range(shift.amount)]

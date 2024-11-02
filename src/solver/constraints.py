@@ -20,12 +20,15 @@ def define_constraints(constraint_factory: ConstraintFactory) -> list[Constraint
         at_least_12h_rest(constraint_factory),
         at_least_36h_rest_weekly(constraint_factory),
         over_required_shift_amount(constraint_factory),
-        # under_required_shift_amount(constraint_factory),
+        under_required_shift_amount(constraint_factory),
         # standard_shift_amount(constraint_factory),
         # weekend_shift_amount(constraint_factory),
         # fair_shift_amount(constraint_factory),
         # fair_shift_type(constraint_factory),
-        # unavailable_employee(constraint_factory),
+        availability_impossible(constraint_factory),
+        availability_necessary(constraint_factory),
+        availability_undesired(constraint_factory),
+        availability_desired(constraint_factory),
         # undesired_by_employee(constraint_factory),
         # preferred_by_employee(constraint_factory),
         # desired_by_employee(constraint_factory)
@@ -134,5 +137,45 @@ def under_required_shift_amount(constraint_factory: ConstraintFactory) -> Constr
             ShiftConstraintConfiguration.over_required_shift_amount,
             lambda employee, shift_type, count: employee.shift_amounts[shift_type] - count
         )
-        .as_constraint("over_required_shift_amount")
+        .as_constraint("under_required_shift_amount")
+    )
+
+
+def availability_impossible(constraint_factory: ConstraintFactory) -> Constraint:
+    return (
+        constraint_factory
+        .for_each(ShiftAssignment)
+        .filter(lambda assignment: assignment.employee.shift_availability[assignment.shift.datetype] == Availability.IMPOSSIBLE)
+        .penalize(ShiftConstraintConfiguration.availability_impossible)
+        .as_constraint("availability_impossible")
+    )
+
+
+def availability_necessary(constraint_factory: ConstraintFactory) -> Constraint:
+    return (
+        constraint_factory
+        .for_each(ShiftAssignment)
+        .filter(lambda assignment: assignment.employee.shift_availability[assignment.shift.datetype] == Availability.NECESSARY)
+        .penalize(ShiftConstraintConfiguration.availability_necessary)
+        .as_constraint("availability_necessary")
+    )
+
+
+def availability_undesired(constraint_factory: ConstraintFactory) -> Constraint:
+    return (
+        constraint_factory
+        .for_each(ShiftAssignment)
+        .filter(lambda assignment: assignment.employee.shift_availability[assignment.shift.datetype] == Availability.UNDESIRED)
+        .penalize(ShiftConstraintConfiguration.availability_undesired)
+        .as_constraint("availability_undesired")
+    )
+
+
+def availability_desired(constraint_factory: ConstraintFactory) -> Constraint:
+    return (
+        constraint_factory
+        .for_each(ShiftAssignment)
+        .filter(lambda assignment: assignment.employee.shift_availability[assignment.shift.datetype] == Availability.DESIRED)
+        .penalize(ShiftConstraintConfiguration.availability_desired)
+        .as_constraint("availability_desired")
     )

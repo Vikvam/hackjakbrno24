@@ -175,3 +175,15 @@ class TestConstraints:
         (constraint_verifier.verify_that(over_required_shift_amount)
             .given(*assignments)
             .penalizes(1))
+
+    def test_availability_impossible(self, constraint_verifier):
+        datetype = create_shiftdatetype()
+        test_employee = create_employee(shift_availability={datetype: Availability.IMPOSSIBLE})
+
+        assignments = [
+            ShiftAssignment(create_shift(datetype=datetype), test_employee),
+        ]
+
+        (constraint_verifier.verify_that(availability_impossible)
+            .given(*assignments)
+            .penalizes(1))

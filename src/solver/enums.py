@@ -65,11 +65,13 @@ class Department(Enum):
 
 
 class Availability(Enum):
+    NECESSARY = auto()
     DESIRED = auto()
     PREFERRED = auto()
     NEUTRAL = auto()
     UNDESIRED = auto()
     UNAVAILABLE = auto()
+    IMPOSSIBLE = auto()
 
     @staticmethod
     def random():
