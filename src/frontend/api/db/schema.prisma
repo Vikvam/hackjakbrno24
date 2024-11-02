@@ -54,13 +54,20 @@ model UserScheduleDay {
   updatedAt      DateTime     @updatedAt
 }
 
-model ShiftSlot {
-  id            Int      @id @default(autoincrement())
-  date          DateTime
+model Shift {
+  id            Int         @id @default(autoincrement())
   type          String
   department    String
   amount        Int
   qualification String
+  ShiftSlot     ShiftSlot[]
+}
+
+model ShiftSlot {
+  id      Int      @id @default(autoincrement())
+  date    DateTime
+  shift   Shift    @relation(fields: [shiftId], references: [id])
+  shiftId Int
 }
 
 // model ShiftPlacement {

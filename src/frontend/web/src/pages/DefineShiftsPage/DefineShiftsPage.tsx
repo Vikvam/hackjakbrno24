@@ -7,6 +7,20 @@ import { Label } from "src/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "src/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "src/components/ui/table"
 import { Plus, Trash2, Edit2 } from 'lucide-react'
+import { useMutation } from '@redwoodjs/web'
+
+const CREATE_SHIFT_SLOT_MUTATION = gql`
+  mutation CreateShiftSlotMutation($input: CreateShiftSlotInput!) {
+    createShiftSlot(input: $input) {
+      id
+      type
+      department
+      amount
+      qualification
+    }
+  }
+`
+
 type Department = 'RTG' | 'CT'
 
 interface ShiftSlot {
@@ -28,6 +42,8 @@ const DefineShiftsPage = ({initialData = []}) => {
  const [shiftDefinitions, setShiftDefinitions] = useState<ShiftDefinition[]>(initialData)
   const [selectedDepartment, setSelectedDepartment] = useState<Department>('RTG')
   const [editingColumn, setEditingColumn] = useState<{ index: number, name: string } | null>(null)
+  const [createShiftSlot] = useMutation(CREATE_SHIFT_SLOT_MUTATION)
+
   const getCurrentDefinition = () => {
     return shiftDefinitions.find(def => def.department === selectedDepartment) || {
       id: Date.now(),
@@ -164,15 +180,25 @@ const DefineShiftsPage = ({initialData = []}) => {
     }
   }
 
-  const saveChanges = () => {
+  const saveChanges = async () => {
     console.log('Saving changes:', shiftDefinitions)
-    // Here you would typically send the data to your backend
-    // For example:
-    // fetch('/api/save-shift-definitions', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(shiftDefinitions)
-    // })
+    for (const definition of shiftDefinitions) {
+      for (const slot of definition.slots) {
+        for (const [skillLevel, amount] of Object.entries(slot.amounts)) {
+          await createShiftSlot({
+            variables: {
+              input: {
+                type: slot.type,
+                department: definition.department,
+                amount: amount,
+                qualification: skillLevel,
+              },
+            },
+          })
+        }
+      }
+    }
+    console.log('Changes saved')
   }
 
   const currentDefinition = getCurrentDefinition()

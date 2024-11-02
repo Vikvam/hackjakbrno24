@@ -1,4 +1,5 @@
 import type { EditShiftSlotById, UpdateShiftSlotInput } from 'types/graphql'
+import { useMutation } from '@redwoodjs/web'
 
 import type { RWGqlError } from '@redwoodjs/forms'
 import {
@@ -11,6 +12,7 @@ import {
   NumberField,
   Submit,
 } from '@redwoodjs/forms'
+import {toast} from "@redwoodjs/web/toast";
 
 const formatDatetime = (value) => {
   if (value) {
@@ -27,14 +29,36 @@ interface ShiftSlotFormProps {
   loading: boolean
 }
 
+const CREATE_SHIFT_SLOT_MUTATION = gql`
+  mutation CreateShiftSlotMutation($input: CreateShiftSlotInput!) {
+    createShiftSlot(input: $input) {
+      id
+      type
+      department
+      amount
+      qualification
+    }
+  }
+`
+
 const ShiftSlotForm = (props: ShiftSlotFormProps) => {
+  const [createShiftSlot, { loading, error }] = useMutation(CREATE_SHIFT_SLOT_MUTATION, {
+    onCompleted: () => {
+      toast.success('ShiftSlot created')
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+
   const onSubmit = (data: FormShiftSlot) => {
     props.onSave(data, props?.shiftSlot?.id)
+    createShiftSlot({ variables: { input: data } })
   }
 
   return (
     <div className="rw-form-wrapper">
-      <Form<FormShiftSlot> onSubmit={onSubmit} error={props.error}>
+      <Form<FormShiftSlot> onSubmit={onSubmit} error={error}>
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
@@ -133,7 +157,7 @@ const ShiftSlotForm = (props: ShiftSlotFormProps) => {
         <FieldError name="qualification" className="rw-field-error" />
 
         <div className="rw-button-group">
-          <Submit disabled={props.loading} className="rw-button rw-button-blue">
+          <Submit disabled={loading} className="rw-button rw-button-blue">
             Save
           </Submit>
         </div>
