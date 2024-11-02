@@ -31,7 +31,7 @@ const Routes = () => {
       <Set wrap={ScaffoldLayout} title="UserSchedules" titleTo="userSchedules" buttonLabel="New UserSchedule"
            buttonTo="newUserSchedule">
         <Route path="/user-schedules/new" page={UserScheduleNewUserSchedulePage} name="newUserSchedule"/>
-        <Route path="/user-schedules/{id:Int}/edit" page={UserScheduleEditUserSchedulePage} name="editUserSchedule"/>
+        <Route path="/user-schedules/{id:Int}/{type:String}/edit" page={UserScheduleEditUserSchedulePage} name="editUserSchedule"/>
         <Route path="/user-schedules/{id:Int}" page={UserScheduleUserSchedulePage} name="userSchedule"/>
         <Route path="/user-schedules" page={UserScheduleUserSchedulesPage} name="userSchedules"/>
       </Set>

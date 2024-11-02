@@ -19,7 +19,7 @@ generator client {
 model User {
   id              Int               @id @default(autoincrement())
   name            String?
-  occupation      String
+  occupation      String            // doctor, nurse, rtgAssistant
   stem            String?
   attestation     String?
   qualification   String?
@@ -33,6 +33,7 @@ model UserSchedule {
   id              Int               @id @default(autoincrement())
   userId          Int
   user            User              @relation(fields: [userId], references: [id])
+  type            String            // monthly, weekly
   schedule        DateTime
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
