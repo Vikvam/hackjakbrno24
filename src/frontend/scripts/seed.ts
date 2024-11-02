@@ -11,17 +11,17 @@ export default async () => {
   try {
     const users = [
       ...Array.from({ length: 30 }, (_, idx) => {
-        const rtg_preference = Math.random()
+        const rtg_preference = Math.round(Math.random() * 100) / 100
         const qualification = ['L1', 'L2', 'L3'][Math.floor(Math.random() * 3)]
-        const attestation = ['', 'RTG'][Math.floor(Math.random() * 2)]
+        const stem = ['RTG', ''][Math.floor(Math.random() * 3)]
         return {
           name: `Doktor${idx + 1}`,
           occupation: 'doctor',
           qualification: qualification,
           rtg_preference: rtg_preference,
           ct_preference: 1 - rtg_preference,
-          stem: ['RTG', ''][Math.floor(Math.random() * 3)],
-          attestation: attestation,
+          stem: stem,
+          attestation: stem ? ['', 'RTG'][Math.floor(Math.random() * 2)] : '',
         }
       }),
       ...Array.from({ length: 30 }, (_, idx) => {
