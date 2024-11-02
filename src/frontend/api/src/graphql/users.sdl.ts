@@ -2,6 +2,7 @@ export const schema = gql`
   type User {
     id: Int!
     name: String
+    occupation: String!
     stem: String
     attestation: String
     qualification: String
@@ -18,6 +19,7 @@ export const schema = gql`
 
   input CreateUserInput {
     name: String
+    occupation: String!
     stem: String
     attestation: String
     qualification: String
@@ -27,6 +29,7 @@ export const schema = gql`
 
   input UpdateUserInput {
     name: String
+    occupation: String
     stem: String
     attestation: String
     qualification: String

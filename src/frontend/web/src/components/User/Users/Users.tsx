@@ -51,6 +51,7 @@ const UsersList = ({ users }: FindUsers) => {
           <tr>
             <th>Id</th>
             <th>Name</th>
+            <th>Occupation</th>
             <th>Stem</th>
             <th>Attestation</th>
             <th>Qualification</th>
@@ -64,6 +65,7 @@ const UsersList = ({ users }: FindUsers) => {
             <tr key={user.id}>
               <td>{truncate(user.id)}</td>
               <td>{truncate(user.name)}</td>
+              <td>{truncate(user.occupation)}</td>
               <td>{truncate(user.stem)}</td>
               <td>{truncate(user.attestation)}</td>
               <td>{truncate(user.qualification)}</td>

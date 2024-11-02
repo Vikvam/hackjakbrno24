@@ -7,8 +7,9 @@ import {
   FieldError,
   Label,
   TextField,
-  Submit, SelectField,
+  Submit,
 } from '@redwoodjs/forms'
+import {useState} from "react";
 
 type FormUser = NonNullable<EditUserById['user']>
 
@@ -20,6 +21,8 @@ interface UserFormProps {
 }
 
 const UserForm = (props: UserFormProps) => {
+  const [occupation, setOccupation] = useState(props.user?.occupation || '')
+
   const onSubmit = (data: FormUser) => {
     props.onSave(data, props?.user?.id)
   }
@@ -52,34 +55,61 @@ const UserForm = (props: UserFormProps) => {
         <FieldError name="name" className="rw-field-error" />
 
         <Label
-          name="stem"
+          name="occupation"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Stem
+          Occupation
         </Label>
 
-        <SelectField name={"stem"}>
-          <option value={"RTG"}>RTG</option>
-          <option value={"CT"}>CT</option>
-        </SelectField>
-        <FieldError name="stem" className="rw-field-error" />
+        <TextField
+          name="occupation"
+          defaultValue={props.user?.occupation}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+          onChange={(e) => setOccupation(e.target.value)}
+        />
 
-        <Label
-          name="attestation"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Attestation
-        </Label>
-        <SelectField name={"attestation"}>
-          <option value={"INTERNAL"}>INTERNAL</option>
-          <option value={"ORTHOPEDIC"}>ORTHOPEDIC</option>
-          <option value={"UROLOGY"}>UROLOGY</option>
-          <option value={"PEDIATRIC"}>PEDIATRIC</option>
-          <option value={"RTG"}>RTG</option>
-        </SelectField>
-        <FieldError name="attestation" className="rw-field-error" />
+        <FieldError name="occupation" className="rw-field-error" />
+
+        {occupation === 'doctor' && (
+          <div>
+            <Label
+              name="stem"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Stem
+            </Label>
+
+            <TextField
+              name="stem"
+              defaultValue={props.user?.stem}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+            />
+
+            <FieldError name="stem" className="rw-field-error" />
+
+            <Label
+              name="attestation"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Attestation
+            </Label>
+
+            <TextField
+              name="attestation"
+              defaultValue={props.user?.attestation}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+            />
+
+            <FieldError name="attestation" className="rw-field-error" />
+          </div>
+        )}
 
         <Label
           name="qualification"
@@ -88,13 +118,15 @@ const UserForm = (props: UserFormProps) => {
         >
           Qualification
         </Label>
-        <SelectField name={"qualification"}>
-          <option value={"Absolvent"}>Absolvent</option>
-          <option value={"Kmen"}>Kmen</option>
-          <option value={"Atestace"}>Atestace</option>
-        </SelectField>
-        <FieldError name="qualification" className="rw-field-error" />
 
+        <TextField
+          name="qualification"
+          defaultValue={props.user?.qualification}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
+        <FieldError name="qualification" className="rw-field-error" />
 
         <Label
           name="rtg_preference"

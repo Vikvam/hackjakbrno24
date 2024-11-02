@@ -62,6 +62,10 @@ const User = ({ user }: Props) => {
               <td>{user.name}</td>
             </tr>
             <tr>
+              <th>Occupation</th>
+              <td>{user.occupation}</td>
+            </tr>
+            <tr>
               <th>Stem</th>
               <td>{user.stem}</td>
             </tr>

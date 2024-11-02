@@ -19,6 +19,7 @@ generator client {
 model User {
   id              Int               @id @default(autoincrement())
   name            String?
+  occupation      String
   stem            String?
   attestation     String?
   qualification   String?

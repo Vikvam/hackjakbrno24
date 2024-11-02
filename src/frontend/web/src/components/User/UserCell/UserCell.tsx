@@ -14,6 +14,7 @@ export const QUERY: TypedDocumentNode<FindUserById, FindUserByIdVariables> =
       user: user(id: $id) {
         id
         name
+        occupation
         stem
         attestation
         qualification

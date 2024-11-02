@@ -14,6 +14,7 @@ export const QUERY: TypedDocumentNode<FindUsers, FindUsersVariables> = gql`
     users {
       id
       name
+      occupation
       stem
       attestation
       qualification
