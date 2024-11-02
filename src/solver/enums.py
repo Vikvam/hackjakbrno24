@@ -43,6 +43,16 @@ class ShiftType(Enum):
             ShiftType.AFTERNOON,
             ShiftType.OVERNIGHT
         ])
+    
+    @classmethod
+    def get(cls, typ: str) -> 'ShiftType':
+        match typ:
+            case "MORNING": return cls.MORNING
+            case "AFTERNOON": return cls.AFTERNOON
+            case "OVERNIGHT": return cls.OVERNIGHT
+            case "WEEKEND_MORNING": return cls.WEEKEND_MORNING
+            case "WEEKEND_EVENING": return cls.WEEKEND_EVENING
+            case _: raise ValueError("Invalid ShiftType provided.")
 
     @property
     def is_overnight(self):
