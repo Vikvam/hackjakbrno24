@@ -7,6 +7,9 @@ import { Label } from "src/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "src/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "src/components/ui/table"
 import { Plus, Trash2, Edit2 } from 'lucide-react'
+import { useMutation } from '@redwoodjs/web'
+import {createShift} from "src/services/shifts/shifts";
+
 type Department = 'RTG' | 'CT'
 
 interface ShiftSlot {
@@ -24,10 +27,25 @@ interface ShiftDefinition {
 
 const departments: Department[] = ['RTG', 'CT']
 
+const CREATE_SHIFT_MUTATION_PAGE = gql`
+  mutation CreateShiftMutationProper($input: CreateShiftInput!) {
+    createShift(input: $input) {
+      id
+      employeeType
+      type
+      department
+      amount
+      qualification
+    }
+  }
+`
+
 const DefineShiftsPage = ({initialData = []}) => {
  const [shiftDefinitions, setShiftDefinitions] = useState<ShiftDefinition[]>(initialData)
   const [selectedDepartment, setSelectedDepartment] = useState<Department>('RTG')
   const [editingColumn, setEditingColumn] = useState<{ index: number, name: string } | null>(null)
+  const [createShift] = useMutation(CREATE_SHIFT_MUTATION_PAGE)
+
   const getCurrentDefinition = () => {
     return shiftDefinitions.find(def => def.department === selectedDepartment) || {
       id: Date.now(),
@@ -35,7 +53,7 @@ const DefineShiftsPage = ({initialData = []}) => {
       skillLevels: ['L1'],
       slots: [{
         id: Date.now(),
-        type: 'New Shift',
+        type: 'L',
         amounts: { L1: 0 }
       }]
     }
@@ -164,15 +182,26 @@ const DefineShiftsPage = ({initialData = []}) => {
     }
   }
 
-  const saveChanges = () => {
+  const saveChanges = async () => {
     console.log('Saving changes:', shiftDefinitions)
-    // Here you would typically send the data to your backend
-    // For example:
-    // fetch('/api/save-shift-definitions', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(shiftDefinitions)
-    // })
+    for (const definition of shiftDefinitions) {
+      for (const slot of definition.slots) {
+        for (const [skillLevel, amount] of Object.entries(slot.amounts)) {
+          await createShift({
+            variables: {
+              input: {
+                employeeType: 'Doctor',
+                type: slot.type,
+                department: definition.department,
+                amount: amount,
+                qualification: skillLevel,
+              },
+            },
+          })
+        }
+      }
+    }
+    console.log('Changes saved')
   }
 
   const currentDefinition = getCurrentDefinition()

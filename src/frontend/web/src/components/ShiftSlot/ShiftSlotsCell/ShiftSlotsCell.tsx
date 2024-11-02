@@ -15,10 +15,7 @@ export const QUERY: TypedDocumentNode<FindShiftSlots, FindShiftSlotsVariables> =
       shiftSlots {
         id
         date
-        type
-        department
-        amount
-        qualification
+        shiftId
       }
     }
   `
