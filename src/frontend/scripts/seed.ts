@@ -37,7 +37,7 @@ export default async () => {
         const rtg_preference = Math.random()
         return {
           name: `RTGAsistent${idx + 1}`,
-          occupation: 'nurse',
+          occupation: 'rtgAssistant',
           rtg_preference: rtg_preference,
           ct_preference: 1 - rtg_preference,
         }
