@@ -14,6 +14,11 @@ export const QUERY: TypedDocumentNode<FindUsers, FindUsersVariables> = gql`
     users {
       id
       name
+      stem
+      attestation
+      qualification
+      rtg_preference
+      ct_preference
     }
   }
 `

@@ -20,6 +20,11 @@ export const QUERY: TypedDocumentNode<EditUserById> = gql`
     user: user(id: $id) {
       id
       name
+      stem
+      attestation
+      qualification
+      rtg_preference
+      ct_preference
     }
   }
 `
@@ -32,6 +37,11 @@ const UPDATE_USER_MUTATION: TypedDocumentNode<
     updateUser(id: $id, input: $input) {
       id
       name
+      stem
+      attestation
+      qualification
+      rtg_preference
+      ct_preference
     }
   }
 `

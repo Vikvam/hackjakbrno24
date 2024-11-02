@@ -51,6 +51,11 @@ const UsersList = ({ users }: FindUsers) => {
           <tr>
             <th>Id</th>
             <th>Name</th>
+            <th>Stem</th>
+            <th>Attestation</th>
+            <th>Qualification</th>
+            <th>Rtg preference</th>
+            <th>Ct preference</th>
             <th>&nbsp;</th>
           </tr>
         </thead>
@@ -59,6 +64,11 @@ const UsersList = ({ users }: FindUsers) => {
             <tr key={user.id}>
               <td>{truncate(user.id)}</td>
               <td>{truncate(user.name)}</td>
+              <td>{truncate(user.stem)}</td>
+              <td>{truncate(user.attestation)}</td>
+              <td>{truncate(user.qualification)}</td>
+              <td>{truncate(user.rtg_preference)}</td>
+              <td>{truncate(user.ct_preference)}</td>
               <td>
                 <nav className="rw-table-actions">
                   <Link

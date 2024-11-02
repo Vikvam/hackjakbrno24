@@ -61,6 +61,26 @@ const User = ({ user }: Props) => {
               <th>Name</th>
               <td>{user.name}</td>
             </tr>
+            <tr>
+              <th>Stem</th>
+              <td>{user.stem}</td>
+            </tr>
+            <tr>
+              <th>Attestation</th>
+              <td>{user.attestation}</td>
+            </tr>
+            <tr>
+              <th>Qualification</th>
+              <td>{user.qualification}</td>
+            </tr>
+            <tr>
+              <th>Rtg preference</th>
+              <td>{user.rtg_preference}</td>
+            </tr>
+            <tr>
+              <th>Ct preference</th>
+              <td>{user.ct_preference}</td>
+            </tr>
           </tbody>
         </table>
       </div>
