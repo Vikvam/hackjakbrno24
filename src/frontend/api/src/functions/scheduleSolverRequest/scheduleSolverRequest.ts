@@ -2,14 +2,14 @@ import fetch from 'node-fetch'
 
 export const handler = async (event, context) => {
   try {
-    const { input_data } = JSON.parse(event.body)
+    const { employees, shifts } = JSON.parse(event.body)
 
     const response = await fetch('http://localhost:8000/solve', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ input_data }),
+      body: JSON.stringify({ employees, shifts }),
     })
 
     const result = await response.json()
