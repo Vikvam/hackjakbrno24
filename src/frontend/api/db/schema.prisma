@@ -22,6 +22,25 @@ model User {
   UserScheduleDay UserScheduleDay[]
 }
 
+model Workplace {
+  id             Int              @id @default(autoincrement())
+  name           String
+  qualifications Qualifications[]
+}
+
+model Shift {
+  id           Int    @id @default(autoincrement())
+  name         String
+  requirements String // json
+}
+
+model Qualifications {
+  id          Int        @id @default(autoincrement())
+  name        String
+  Workplace   Workplace? @relation(fields: [workplaceId], references: [id])
+  workplaceId Int?
+}
+
 model UserSchedule {
   id              Int               @id @default(autoincrement())
   userId          Int
