@@ -63,7 +63,9 @@ class Employee:
 
 @dataclass
 class Doctor(Employee):
-    qualifications: Qualifications
+    stem: Stems
+    atestation: Optional[Atestations]
+    qualifications: Optional[Qualifications]
 
 
 # Planning Entity

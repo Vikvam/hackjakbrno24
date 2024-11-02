@@ -1,11 +1,25 @@
+import random
 from enum import Enum, auto
 from datetime import time
 
 
+class Stems(Enum):
+    RTG = auto()
+    CT = auto()
+
+
+class Atestations(Enum):
+    INTERNAL = auto()
+    ORTHOPEDIC = auto()
+    UROLOGY = auto()
+    PEDIATRIC = auto()
+    RTG = auto()
+
+
 class Qualifications(Enum):
-    NONE = "Asolvent"
-    STEM = "Kmen"
-    CERTIFIED = "Atestace"
+    L1 = "Asolvent"
+    L2 = "Kmen"
+    L3 = "Atestace"
 
 
 class ShiftType(Enum):
@@ -14,6 +28,21 @@ class ShiftType(Enum):
     OVERNIGHT = (time(18, 0), time(7, 0))
     WEEKEND_MORNING = (time(6, 0), time(19, 0))
     WEEKEND_EVENING = (time(18, 0), time(7, 0))
+
+    @staticmethod
+    def weekendrange():
+        return iter([
+            ShiftType.WEEKEND_MORNING,
+            ShiftType.WEEKEND_EVENING
+        ])
+
+    @staticmethod
+    def weekdayrange():
+        return iter([
+            ShiftType.MORNING,
+            ShiftType.AFTERNOON,
+            ShiftType.OVERNIGHT
+        ])
 
 
 class Department(Enum):
@@ -27,3 +56,7 @@ class Availability(Enum):
     NEUTRAL = auto()
     UNDESIRED = auto()
     UNAVAILABLE = auto()
+
+    @staticmethod
+    def random():
+        return random.choice(list(Availability))

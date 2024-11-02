@@ -17,23 +17,27 @@ if __name__ == "__main__":
     MONTH = 11
 
     doctor_shifts = []
-    p
+    shift_availabilities = {}
     for date in calendar.Calendar().itermonthdates(YEAR, MONTH):
         if date.month != MONTH: continue
         if date.weekday() > 4:
             doctor_shifts.extend([
-                ShiftDetails(date, ShiftType.WEEKEND_MORNING, Department.RTG, 1, Qualifications.STEM),
-                ShiftDetails(date, ShiftType.WEEKEND_EVENING, Department.RTG, 1, Qualifications.STEM),
+                ShiftDetails(ShiftDatetype(date, ShiftType.WEEKEND_MORNING), Department.RTG, 1, Qualifications.L2),
+                ShiftDetails(ShiftDatetype(date, ShiftType.WEEKEND_EVENING), Department.RTG, 1, Qualifications.L2),
             ])
+            for shift_type in ShiftType.weekendrange():
+                shift_availabilities[ShiftDatetype(date, shift_type)] = None
         else:
             doctor_shifts.extend([
-                ShiftDetails(date, ShiftType.MORNING, Department.RTG, 1, Qualifications.CERTIFIED),
-                ShiftDetails(date, ShiftType.MORNING, Department.RTG, 1, Qualifications.STEM),
-                ShiftDetails(date, ShiftType.AFTERNOON, Department.RTG, 1, Qualifications.STEM),
-                ShiftDetails(date, ShiftType.OVERNIGHT, Department.RTG, 1, Qualifications.STEM),
-                ShiftDetails(date, ShiftType.MORNING, Department.RTG, 3, None),
-                ShiftDetails(date, ShiftType.AFTERNOON, Department.RTG, 2, None),
+                ShiftDetails(ShiftDatetype(date, ShiftType.MORNING), Department.RTG, 1, Qualifications.L3),
+                ShiftDetails(ShiftDatetype(date, ShiftType.MORNING), Department.RTG, 1, Qualifications.L2),
+                ShiftDetails(ShiftDatetype(date, ShiftType.AFTERNOON), Department.RTG, 1, Qualifications.L2),
+                ShiftDetails(ShiftDatetype(date, ShiftType.OVERNIGHT), Department.RTG, 1, Qualifications.L2),
+                ShiftDetails(ShiftDatetype(date, ShiftType.MORNING), Department.RTG, 3, None),
+                ShiftDetails(ShiftDatetype(date, ShiftType.AFTERNOON), Department.RTG, 2, None),
             ])
+            for shift_type in ShiftType.weekdayrange():
+                shift_availabilities[ShiftDatetype(date, shift_type)] = None
 
     doctor_assignments = [ShiftAssignment(shift) for shift in doctor_shifts for _ in range(shift.amount)]
 
@@ -41,7 +45,7 @@ if __name__ == "__main__":
         Doctor(
             f"Doc{i}",
             {Department.RTG: .5, Department.CT: .5},
-            Qualifications.CERTIFIED,
-            {}
+            {datetype: Availability.random() for datetype in shift_availabilities},
+            Qualifications.L3,
         ) for i in range(5)
     ]
