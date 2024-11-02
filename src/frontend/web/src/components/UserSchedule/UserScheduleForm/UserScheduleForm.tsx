@@ -110,7 +110,7 @@ const UserScheduleForm = (props: UserScheduleFormProps) => {
 
       <div className="rw-form-wrapper">
         <Form<FormUserSchedule> hidden={false} onSubmit={onSubmit} error={props.error}>
-          <WeeklyScheduleComponent id={props.userSchedule?.userId}></WeeklyScheduleComponent>
+          <WeeklyScheduleComponent></WeeklyScheduleComponent>
           <FormError
             error={props.error}
             wrapperClassName="rw-form-error-wrapper"

@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "src/components/ui/table"
 import UserScheduleDay from "src/components/UserScheduleDayCell";
 
-export function WeeklyScheduleComponent(props) {
+export function WeeklyScheduleComponent() {
   const daysOfWeek = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So']
   const partsOfDay = ['Ranní', 'Odpolední', 'Večerní', 'Noční']
 
