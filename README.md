@@ -34,4 +34,20 @@ Jak updateovat database schema:
 ```console
 yarn rw prisma migrate dev
 ```
+
 # solver
+
+Jak nastavit python env:
+
+```console
+cd src/solver
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+Jak spustit fast api:
+
+```console
+python solver_api.py
+```
