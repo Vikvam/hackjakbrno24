@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from src.solver.domain import *
+from src.solver.src.domain import *
 
 
 def create_shiftdatetype(

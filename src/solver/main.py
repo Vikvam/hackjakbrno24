@@ -4,9 +4,9 @@ import random
 import sys
 from datetime import date
 
-from domain import *
-from enums import *
-from solution import *
+from src.solver.src.domain import *
+from src.solver.src.enums import *
+from src.solver.src.solution import *
 
 
 def doctors_mock(YEAR = 2024, MONTH = 11):
@@ -37,7 +37,7 @@ def doctors_mock(YEAR = 2024, MONTH = 11):
         Doctor(
             f"Doc{i}",
             {Department.RTG: .5, Department.CT: .5},
-            defaultdict(lambda: 1, {}),
+            {shift_type: 1 for shift_type in ShiftType},
             {datetype: Availability.random() for datetype in shift_availabilities},
             Qualifications.L3,
             None,
@@ -59,6 +59,7 @@ if __name__ == "__main__":
 
     problem = ShiftsSchedule(doctors, doctor_shifts, doctor_assignments)
 
+    print(f"Solving... {datetime.now()}")
     solution, score_analysis = solve(problem)
 
     print(solution)

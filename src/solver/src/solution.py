@@ -5,9 +5,9 @@ from timefold.solver import (
 from timefold.solver.config import SolverConfig, ScoreDirectorFactoryConfig, TerminationConfig, Duration
 from timefold.solver.score import ScoreExplanation
 
-from domain import *
-from enums import *
-from constraints import define_constraints
+from src.solver.src.domain import *
+from src.solver.src.enums import *
+from src.solver.src.constraints import define_constraints
 
 
 def solve(problem: ShiftsSchedule):
@@ -19,7 +19,7 @@ def solve(problem: ShiftsSchedule):
         ),
         termination_config=TerminationConfig(
             spent_limit=Duration(
-                minutes=5,
+                minutes=0,
                 seconds=30,
             ),
             unimproved_spent_limit=Duration(

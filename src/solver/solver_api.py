@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import time
 import uuid
 
-from domain import DoctorModel, ShiftModel
+from backend.models import DoctorModel, ShiftModel
 
 app = FastAPI()
 

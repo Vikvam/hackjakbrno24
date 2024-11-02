@@ -3,8 +3,8 @@ from datetime import date, datetime, time, timedelta
 import pytest
 
 
-from src.solver.constraints import *
-from src.solver.mock import *
+from src.solver.src.constraints import *
+from src.solver.src.mock import *
 
 
 @pytest.fixture

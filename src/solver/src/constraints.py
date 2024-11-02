@@ -9,8 +9,8 @@ from timefold.solver.score import (
 )
 from timefold.solver.score import ConstraintCollectors
 
-from src.solver.domain import *
-from src.solver.constraint_config import *
+from src.solver.src.domain import *
+from src.solver.src.constraint_config import *
 
 
 @constraint_provider
@@ -25,13 +25,10 @@ def define_constraints(constraint_factory: ConstraintFactory) -> list[Constraint
         # weekend_shift_amount(constraint_factory),
         # fair_shift_amount(constraint_factory),
         # fair_shift_type(constraint_factory),
-        availability_impossible(constraint_factory),
-        availability_necessary(constraint_factory),
-        availability_undesired(constraint_factory),
-        availability_desired(constraint_factory),
-        # undesired_by_employee(constraint_factory),
-        # preferred_by_employee(constraint_factory),
-        # desired_by_employee(constraint_factory)
+        # availability_impossible(constraint_factory),
+        # availability_necessary(constraint_factory),
+        # availability_undesired(constraint_factory),
+        # availability_desired(constraint_factory),
     ]
 
 
@@ -46,7 +43,7 @@ def no_overlapping_shifts(constraint_factory: ConstraintFactory) -> Constraint:
             )
         )
         .penalize(ShiftConstraintConfiguration.is_illegal)
-        .as_constraint("no_overlaping_shifts")
+        .as_constraint("no_overlapping_shifts")
     )
 
 
@@ -179,3 +176,18 @@ def availability_desired(constraint_factory: ConstraintFactory) -> Constraint:
         .penalize(ShiftConstraintConfiguration.availability_desired)
         .as_constraint("availability_desired")
     )
+
+
+# def department_desired(constraint_factory: ConstraintFactory) -> Constraint:
+#     return (
+#         constraint_factory
+#         .for_each(ShiftAssignment)
+#         .group_by(
+#             lambda assignment: assignment.employee,
+#             lambda assignment: assignment.shift.department,
+#             ConstraintCollectors.count()
+#         )
+#         .filter(lambda assignment: assignment.employee.shift_availability[assignment.shift.datetype] == Availability.DESIRED)
+#         .penalize(ShiftConstraintConfiguration.department_desired)
+#         .as_constraint("department_desired")
+#     )
