@@ -5,6 +5,10 @@ export const schema = gql`
     userSchedule: UserSchedule!
     user: User!
     day: DateTime!
+    dayPart: Int!
+    preference: Int!
+    reasonCode: Int!
+    reasonText: String!
     createdAt: DateTime!
     updatedAt: DateTime!
   }
@@ -17,11 +21,19 @@ export const schema = gql`
   input CreateUserScheduleDayInput {
     userScheduleId: Int!
     day: DateTime!
+    dayPart: Int!
+    preference: Int!
+    reasonCode: Int!
+    reasonText: String!
   }
 
   input UpdateUserScheduleDayInput {
     userScheduleId: Int
     day: DateTime
+    dayPart: Int
+    preference: Int
+    reasonCode: Int
+    reasonText: String
   }
 
   type Mutation {

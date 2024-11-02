@@ -17,7 +17,7 @@ export const QUERY: TypedDocumentNode<
     userScheduleDay: userScheduleDay(id: $id) {
       id
       day
-      partOfDay
+      dayPart
       preference
     }
   }
