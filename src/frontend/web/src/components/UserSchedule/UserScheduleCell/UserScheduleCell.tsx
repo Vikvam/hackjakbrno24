@@ -22,6 +22,9 @@ export const QUERY: TypedDocumentNode<
       schedule
       createdAt
       updatedAt
+      UserScheduleDay {
+        preference
+      }
     }
   }
 `
@@ -39,5 +42,6 @@ export const Failure = ({
 export const Success = ({
   userSchedule,
 }: CellSuccessProps<FindUserScheduleById, FindUserScheduleByIdVariables>) => {
-  return <UserSchedule userSchedule={userSchedule} />
+  console.log("log", userSchedule.UserScheduleDay)
+  return <UserSchedule id={userSchedule.id}/>
 }

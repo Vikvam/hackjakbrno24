@@ -24,6 +24,12 @@ export const schema = gql`
     schedule: DateTime
   }
 
+#  input CreateUserScheduleWithDays {
+#    userId: Int
+#    schedule: DateTime
+#    UserScheduleDay: [UserScheduleDay]
+#  }
+
   type Mutation {
     createUserSchedule(input: CreateUserScheduleInput!): UserSchedule!
       @requireAuth
@@ -32,5 +38,6 @@ export const schema = gql`
       input: UpdateUserScheduleInput!
     ): UserSchedule! @requireAuth
     deleteUserSchedule(id: Int!): UserSchedule! @requireAuth
+
   }
 `

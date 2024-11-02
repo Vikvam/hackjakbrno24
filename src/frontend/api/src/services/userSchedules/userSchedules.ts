@@ -5,6 +5,7 @@ import type {
 } from 'types/graphql'
 
 import { db } from 'src/lib/db'
+import {getCurrentUser} from "src/lib/auth";
 
 export const userSchedules: QueryResolvers['userSchedules'] = () => {
   return db.userSchedule.findMany()

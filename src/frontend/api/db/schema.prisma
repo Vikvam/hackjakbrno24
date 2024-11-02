@@ -36,7 +36,8 @@ model UserScheduleDay {
   id             Int          @id @default(autoincrement())
   userScheduleId Int
   userSchedule   UserSchedule @relation(fields: [userScheduleId], references: [id])
-  user           User         @relation(fields: [userScheduleId], references: [id])
+  userId         Int
+  user           User         @relation(fields: [userId], references: [id])
   day            DateTime
   dayPart        Int
   preference     Int
