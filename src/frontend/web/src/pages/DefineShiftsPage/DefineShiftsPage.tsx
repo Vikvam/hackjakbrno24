@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "s
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "src/components/ui/table"
 import { Plus, Trash2, Edit2 } from 'lucide-react'
 import { useMutation } from '@redwoodjs/web'
-import {createShift} from "src/services/shifts/shifts";
 
 type Department = 'RTG' | 'CT'
 
@@ -31,8 +30,8 @@ const CREATE_SHIFT_MUTATION_PAGE = gql`
   mutation CreateShiftMutationProper($input: CreateShiftInput!) {
     createShift(input: $input) {
       id
-      employeeType
       type
+      employeeType
       department
       amount
       qualification
@@ -190,8 +189,8 @@ const DefineShiftsPage = ({initialData = []}) => {
           await createShift({
             variables: {
               input: {
-                employeeType: 'Doctor',
                 type: slot.type,
+                employeeType: 'Doctor',
                 department: definition.department,
                 amount: amount,
                 qualification: skillLevel,

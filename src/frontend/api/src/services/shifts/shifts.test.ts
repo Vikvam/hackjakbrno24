@@ -28,7 +28,7 @@ describe('shifts', () => {
         type: 'String',
         employeeType: 'String',
         department: 'String',
-        amount: 3744234,
+        amount: 2161237,
         qualification: 'String',
       },
     })
@@ -36,7 +36,7 @@ describe('shifts', () => {
     expect(result.type).toEqual('String')
     expect(result.employeeType).toEqual('String')
     expect(result.department).toEqual('String')
-    expect(result.amount).toEqual(3744234)
+    expect(result.amount).toEqual(2161237)
     expect(result.qualification).toEqual('String')
   })
 
