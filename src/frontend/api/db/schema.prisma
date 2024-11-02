@@ -15,7 +15,7 @@ generator client {
 }
 
 // Define your own datamodels here and run `yarn redwood prisma migrate dev`
-//stem::string, attestation::string, qualification::string, RTG_preference::float?, CT_preference::float?
+// stem::string, attestation::string, qualification::string, RTG_preference::float?, CT_preference::float?
 model User {
   id              Int               @id @default(autoincrement())
   name            String?
@@ -52,3 +52,16 @@ model UserScheduleDay {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 }
+
+model ShiftSlot {
+  id            Int      @id @default(autoincrement())
+  date          DateTime
+  type          String
+  department    String
+  amount        Int
+  qualification String
+}
+
+// model ShiftPlacement {
+//
+// }
