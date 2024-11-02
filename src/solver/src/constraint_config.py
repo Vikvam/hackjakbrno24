@@ -7,8 +7,8 @@ from timefold.solver.score import HardMediumSoftScore
 @dataclass
 class ShiftConstraintConfiguration:
     # Hard constraints
-    each_shift_assigned: HardMediumSoftScore = HardMediumSoftScore.of_hard(10**16)
     is_illegal: HardMediumSoftScore = HardMediumSoftScore.of_hard(1000)
+    has_qualification: HardMediumSoftScore = HardMediumSoftScore.of_hard(1000)
 
     availability_impossible: HardMediumSoftScore = HardMediumSoftScore.of_hard(1)
     availability_necessary: HardMediumSoftScore = HardMediumSoftScore.of_hard(1)

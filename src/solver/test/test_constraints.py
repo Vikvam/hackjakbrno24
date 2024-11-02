@@ -146,6 +146,32 @@ class TestConstraints:
             .given(*assignments)
             .penalizes(0))
 
+    def test_has_qualification_violation(self, constraint_verifier, basic_test_employee):
+        test_employee = create_doctor(qualification=Qualifications.L1)
+
+        assignments = [
+            ShiftAssignment(create_shift(qualification=Qualifications.L1), test_employee),
+            ShiftAssignment(create_shift(qualification=Qualifications.L2), test_employee),
+            ShiftAssignment(create_shift(qualification=Qualifications.L3), test_employee),
+        ]
+
+        (constraint_verifier.verify_that(has_qualification)
+            .given(*assignments)
+            .penalizes(2))
+
+    def test_has_qualification_no_violation(self, constraint_verifier, basic_test_employee):
+        test_doctor = create_doctor(qualification=Qualifications.L3)
+        test_employee = create_doctor(qualification=Qualifications.L1)
+
+        assignments = [
+            ShiftAssignment(create_shift(qualification=Qualifications.L1), test_doctor),
+            ShiftAssignment(create_shift(qualification=None), test_employee),
+        ]
+
+        (constraint_verifier.verify_that(has_qualification)
+            .given(*assignments)
+            .penalizes(0))
+
     def test_over_required_shift_amount_violation(self, constraint_verifier):
         test_employee = create_employee(shift_amounts={ShiftType.OVERNIGHT: 0})
         other_employee = create_employee(shift_amounts={ShiftType.OVERNIGHT: 2})
@@ -202,7 +228,7 @@ class TestConstraints:
             .penalizes(0))
 
     def test_department_desired_violation(self, constraint_verifier):
-        test_employee = create_employee()
+        test_employee = create_employee(department_preference={department: 1 / len(Departments) for department in Departments})
 
         assignments = [
             ShiftAssignment(create_shift(department=Departments.RTG), test_employee),

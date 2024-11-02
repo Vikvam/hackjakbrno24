@@ -21,6 +21,22 @@ class Qualifications(Enum):
     L2 = "Kmen"
     L3 = "Atestace"
 
+    def __ge__(self, other):
+        if not isinstance(other, Qualifications): return NotImplemented
+        return self._name_ >= other._name_
+
+    def __gt__(self, other):
+        if not isinstance(other, Qualifications): return NotImplemented
+        return self._name_ > other._name_
+
+    def __le__(self, other):
+        if not isinstance(other, Qualifications): return NotImplemented
+        return self._name_ <= other._name_
+
+    def __lt__(self, other):
+        if not isinstance(other, Qualifications): return NotImplemented
+        return self._name_ < other._name_
+
 
 class ShiftType(Enum):
     MORNING = (time(7, 0), time(15, 30))

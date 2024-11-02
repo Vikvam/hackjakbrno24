@@ -106,7 +106,7 @@ class Employee:
 class Doctor(Employee):
     stem: Optional[Trunks]
     specialization: Optional[Specialization]
-    qualifications: Optional[Qualifications]
+    qualification: Qualifications
 
 
 # Planning Entity

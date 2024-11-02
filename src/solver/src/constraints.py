@@ -19,6 +19,7 @@ def define_constraints(constraint_factory: ConstraintFactory) -> list[Constraint
         no_overlapping_shifts(constraint_factory),
         at_least_12h_rest(constraint_factory),
         at_least_36h_rest_weekly(constraint_factory),
+        has_qualification(constraint_factory),
         over_required_shift_amount(constraint_factory),
         under_required_shift_amount(constraint_factory),
         # standard_shift_amount(constraint_factory),
@@ -100,6 +101,17 @@ def at_least_36h_rest_weekly(constraint_factory: ConstraintFactory) -> Constrain
         .filter(lambda employee, week, assignments: not has_36h_continuous_rest(assignments))
         .penalize(ShiftConstraintConfiguration.is_illegal)
         .as_constraint("at_least_36h_rest_weekly")
+    )
+
+
+def has_qualification(constraint_factory: ConstraintFactory) -> Constraint:
+    return (
+        constraint_factory
+        .for_each(ShiftAssignment)
+        .filter(lambda assignment: assignment.shift.qualification is not None)
+        .filter(lambda assignment: isinstance(assignment.employee, Doctor) and assignment.employee.qualification < assignment.shift.qualification)
+        .penalize(ShiftConstraintConfiguration.has_qualification)
+        .as_constraint("has_qualification")
     )
 
 

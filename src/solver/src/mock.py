@@ -43,3 +43,23 @@ def create_employee(
         shift_amounts=defaultdict(lambda: 1, shift_amounts or {}),
         shift_availability=defaultdict(lambda: Availability.NEUTRAL, shift_availability or {})
     )
+
+
+def create_doctor(
+        name: str = "Emp",
+        department_preference: dict[Departments, float] | None = None,
+        shift_amounts: dict[ShiftType, int] | None = None,
+        shift_availability: dict[ShiftDatetype, Availability] | None = None,
+        stem: Optional[Trunks] = Trunks.RTG,
+        specialization: Optional[Specialization] = Specialization.RTG,
+        qualification: Qualifications = Qualifications.L3,
+        ) -> Employee:
+    return Doctor(
+        name=name,
+        department_preference=department_preference if department_preference else {department: 1 / len(Departments) for department in Departments},
+        shift_amounts=defaultdict(lambda: 1, shift_amounts or {}),
+        shift_availability=defaultdict(lambda: Availability.NEUTRAL, shift_availability or {}),
+        stem=stem,
+        specialization=specialization,
+        qualification=qualification
+    )

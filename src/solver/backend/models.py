@@ -33,7 +33,7 @@ class DoctorModel(BaseModel):
             shift_availability={ShiftDatetype(t[0], t[1]): t[2] for t in self.shift_availability},
             stem=self.stem,
             atestation=self.atestation,
-            qualifications=self.qualifications,
+            qualification=self.qualifications,
         )
 
 
