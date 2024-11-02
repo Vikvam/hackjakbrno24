@@ -1,28 +1,31 @@
 # solver_api.py
 from fastapi import FastAPI, BackgroundTasks
 from pydantic import BaseModel
-import json
 import time
 import uuid
+
+from domain import DoctorModel, ShiftModel
 
 app = FastAPI()
 
 class SolverInput(BaseModel):
-    input_data: str
+    employees: list[DoctorModel]
+    shifts: list[ShiftModel]
 
 jobs = {}
 
-def solver_task(job_id, input_data):
+def solver_task(job_id, input_data: SolverInput):
     # Simulate a long-running computation
     time.sleep(10)  # Simulate delay
-    result = {"message": f"Hello from Python! Received: {input_data}"}
+    result = {"message": f"Hello from Python! Received: {input_data.model_dump_json()}"}
     jobs[job_id] = result
 
 @app.post("/solve")
 def solve(input: SolverInput, background_tasks: BackgroundTasks):
+    print("Received: ", input)
     job_id = str(uuid.uuid4())
     jobs[job_id] = {"status": "Job is running"}
-    background_tasks.add_task(solver_task, job_id, input.input_data)
+    background_tasks.add_task(solver_task, job_id, input)
     return {"job_id": job_id}
 
 @app.get("/result/{job_id}")

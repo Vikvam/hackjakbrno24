@@ -9,9 +9,9 @@ from timefold.solver.score import (
 )
 from timefold.solver.score import ConstraintCollectors
 
-from src.solver.domain import *
-from src.solver.constraint_config import *
-from src.solver.enums import *
+from domain import *
+from constraint_config import *
+from enums import *
 
 
 @constraint_provider

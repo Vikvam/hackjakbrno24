@@ -8,9 +8,9 @@ from timefold.solver import (
 )
 from timefold.solver.config import SolverConfig, ScoreDirectorFactoryConfig, TerminationConfig, Duration
 
-from src.solver.domain import *
-from src.solver.enums import *
-from src.solver.solution import *
+from domain import *
+from enums import *
+from solution import *
 
 
 if __name__ == "__main__":
