@@ -1,12 +1,7 @@
 import calendar
 import random
+import sys
 from datetime import date
-from timefold.solver import (
-    SolverFactory,
-    SolutionManager,
-    Solver
-)
-from timefold.solver.config import SolverConfig, ScoreDirectorFactoryConfig, TerminationConfig, Duration
 
 from src.solver.domain import *
 from src.solver.enums import *

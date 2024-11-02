@@ -44,6 +44,10 @@ class ShiftType(Enum):
             ShiftType.OVERNIGHT
         ])
 
+    @property
+    def is_overnight(self):
+        return self == ShiftType.OVERNIGHT or self == ShiftType.WEEKEND_EVENING
+
 
 class Department(Enum):
     RTG = auto()

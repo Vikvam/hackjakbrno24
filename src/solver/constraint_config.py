@@ -6,9 +6,13 @@ from timefold.solver.score import HardMediumSoftScore
 @constraint_configuration
 @dataclass
 class ShiftConstraintConfiguration:
-    # Hard constraints (weight 100, 80)
-    one_shift_per_day: HardMediumSoftScore = HardMediumSoftScore.of_hard(100)
-    at_least_1_day_between_shifts: HardMediumSoftScore = HardMediumSoftScore.of_hard(80)
+    # Hard constraints
+    is_illegal: HardMediumSoftScore = HardMediumSoftScore.of_hard(1000)
+
+    one_shift_per_day: HardMediumSoftScore = HardMediumSoftScore.of_hard(1000)
+    at_least_12h_rest: HardMediumSoftScore = HardMediumSoftScore.of_hard(1000)
+    at_least_36h_rest_weekly: HardMediumSoftScore = HardMediumSoftScore.of_hard(1000)
+
     older_employee: HardMediumSoftScore = HardMediumSoftScore.of_hard(80)
 
     # Hard constraints (weight 1)

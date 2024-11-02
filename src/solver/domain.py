@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Annotated, List, Optional
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from uuid import UUID, uuid4
 from timefold.solver.domain import (
     planning_entity,
@@ -25,11 +25,17 @@ class ShiftDatetype:
 
     @property
     def start_datetime(self) -> datetime:
-        return datetime.combine(self.date, self.type[0])
+        return datetime.combine(self.date, self.type.value[0])
 
     @property
     def end_datetime(self) -> datetime:
-        return datetime.combine(self.date, self.type[1])
+        date = self.date
+        if self.type.is_overnight:
+            date += timedelta(days=1)
+        return datetime.combine(date, self.type.value[1])
+
+    def __str__(self):
+        return "<" + str(self.start_datetime) + " to " + str(self.end_datetime) + ">"
 
     def __sub__(self, other) -> float:
         if self.date < other.date:
@@ -69,6 +75,17 @@ class Shift:
     def type(self) -> ShiftType:
         return self.datetype.type
 
+    @property
+    def start_datetime(self) -> datetime:
+        return self.datetype.start_datetime
+
+    @property
+    def end_datetime(self) -> datetime:
+        return self.datetype.end_datetime
+
+    def __repr__(self):
+        return "<" + str(self.datetype) + ">"
+
     def __sub__(self, other):
         return self.date - other.date
 
@@ -78,6 +95,9 @@ class Employee:
     name: Annotated[str, PlanningId]
     department_preference: dict[Department, float]
     shift_availability: dict[ShiftDatetype, Availability]
+
+    def __str__(self):
+        return self.name
 
 
 @dataclass(frozen=True)
@@ -97,6 +117,9 @@ class ShiftAssignment:
     )
     shift: Shift
     employee: Annotated[Employee | None, PlanningVariable] = field(default=None)
+
+    def __str__(self):
+        return f"<{self.id}, {self.employee}, {self.shift}>"
 
 
 # Planning Solution
