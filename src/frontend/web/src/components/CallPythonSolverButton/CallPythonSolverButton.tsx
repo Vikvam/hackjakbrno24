@@ -5,19 +5,19 @@ const CallPythonSolverButton = () => {
   const [result, setResult] = useState(null)
 
   const scheduleSolver = async () => {
-    const response = await fetch('/.netlify/functions/scheduleSolverRequest', {
+    const response = await fetch('/.redwood/functions/scheduleSolverRequest', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ input_data: "example input" }),
+      body: JSON.stringify({ input_data: 'example input' }),
     })
     const data = await response.json()
     setJobId(data.job_id)
   }
 
   const checkResult = async () => {
-    const response = await fetch('/.netlify/functions/checkSolverResult', {
+    const response = await fetch('/.redwood/functions/checkSolverResult', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

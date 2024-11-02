@@ -1,4 +1,3 @@
-// api/src/functions/checkSolverResult.ts
 import fetch from 'node-fetch'
 
 export const handler = async (event, context) => {
