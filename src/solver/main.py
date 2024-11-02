@@ -4,9 +4,9 @@ import random
 import sys
 from datetime import date
 
-from src.solver.domain import *
-from src.solver.enums import *
-from src.solver.solution import *
+from domain import *
+from enums import *
+from solution import *
 
 
 def doctors_mock(YEAR = 2024, MONTH = 11):

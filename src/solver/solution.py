@@ -5,9 +5,9 @@ from timefold.solver import (
 from timefold.solver.config import SolverConfig, ScoreDirectorFactoryConfig, TerminationConfig, Duration
 from timefold.solver.score import ScoreExplanation
 
-from src.solver.domain import *
-from src.solver.enums import *
-from src.solver.constraints import define_constraints
+from domain import *
+from enums import *
+from constraints import define_constraints
 
 
 def solve(problem: ShiftsSchedule):
