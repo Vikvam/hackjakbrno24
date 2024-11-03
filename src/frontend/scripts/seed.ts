@@ -130,51 +130,51 @@ export default async () => {
           week: 1,
         }
       })
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(year, month - 1, day)
-        const preferences = []
-        const isWeekend = date.getDay() === 0 || date.getDay() === 6
-        if (isWeekend) {
-          for (const shift in createdWeekendShifts) {
-            preferences.push({
-              userScheduleId: monthlySchedule.id,
-              userId: user,
-              preference: Math.floor(Math.random() * 5),
-              reasonCode: 0,
-              reasonText: '',
-              shiftId: shift.id,
-            })
-          }
-        }
-        else {
-          for (const shift in createdWeekdayShifts) {
-            preferences.push({
-              userScheduleId: weeklySchedule.id,
-              userId: u,
-              preference: Math.floor(Math.random() * 5),
-              reasonCode: 0,
-              reasonText: '',
-              shiftId: shift.id,
-            })
-          }
-          for (const shift in createdOvernightShifts) {
-            preferences.push({
-              userScheduleId: monthlySchedule.id,
-              userId: u,
-              preference: Math.floor(Math.random() * 5),
-              reasonCode: 0,
-              reasonText: '',
-              shiftId: shift.id,
-            })
-          }
-        }
-        await db.userScheduleDay.createMany({
-          data: preferences
-        })
-      }
+      // for (let day = 1; day <= daysInMonth; day++) {
+      //   const date = new Date(year, month - 1, day)
+      //   const preferences = []
+      //   const isWeekend = date.getDay() === 0 || date.getDay() === 6
+      //   if (isWeekend) {
+      //     for (const shift in createdWeekendShifts) {
+      //       preferences.push({
+      //         userScheduleId: monthlySchedule.id,
+      //         userId: user,
+      //         preference: Math.floor(Math.random() * 5),
+      //         reasonCode: 0,
+      //         reasonText: '',
+      //         shiftId: shift.id,
+      //       })
+      //     }
+      //   }
+      //   else {
+      //     for (const shift in createdWeekdayShifts) {
+      //       preferences.push({
+      //         userScheduleId: weeklySchedule.id,
+      //         userId: u,
+      //         preference: Math.floor(Math.random() * 5),
+      //         reasonCode: 0,
+      //         reasonText: '',
+      //         shiftId: shift.id,
+      //       })
+      //     }
+      //     for (const shift in createdOvernightShifts) {
+      //       preferences.push({
+      //         userScheduleId: monthlySchedule.id,
+      //         userId: u,
+      //         preference: Math.floor(Math.random() * 5),
+      //         reasonCode: 0,
+      //         reasonText: '',
+      //         shiftId: shift.id,
+      //       })
+      //     }
+      //   }
+      //   await db.userScheduleDay.createMany({
+      //     data: preferences
+      //   })
+      // }
     }
 
-    console.info('Seed data inserted successfully!', createdUsers.length)
+    console.info('Seed data inserted successfully!', users.length)
   } catch (error) {
     console.error(error)
   }

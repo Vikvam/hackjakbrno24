@@ -15,34 +15,35 @@ const USER_QUERY = gql`
       id
       name
       attestation
+      qualification
       ct_preference
       rtg_preference
-
+      occupation
     }
   }
 `
 
 
 const SearchUsersPage = () => {
-  const { data, loading, error } = useQuery(USER_QUERY)
-  const fuse = new Fuse(data?.users || [], {
-    keys: ['name'],
-    threshold: 0.3,
-  })
-
+  const {data, loading, error} = useQuery(USER_QUERY)
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState(data?.users || [])
+  let fuse;
 
   const handleSearch = useCallback((value: string) => {
     setSearchTerm(value)
     if (value.trim() === '') {
       setSearchResults(data?.users || [])
     } else {
-      const results = fuse.search(value)
-      setSearchResults(results.map(result => result.item))
+      console.log("Fuse is", fuse)
+      if (fuse) {
+        const results = fuse.search(value)
+        console.log("Searching ", value, " results are ", results)
+        setSearchResults(results.map(result => result.item))
+      }
     }
-  }, [])
+  }, [loading])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -66,9 +67,17 @@ const SearchUsersPage = () => {
     }
   }, [isOpen])
 
+  console.log("Users", data)
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
-    return (
+
+  fuse = new Fuse(data?.users || [], {
+    keys: ['name'],
+    threshold: 0.3,
+  })
+
+
+  return (
     <div>
       <h1 className="text-5xl font-bold text-center mb-8">Najít uživatele</h1>
       <div className="">
@@ -103,15 +112,19 @@ const SearchUsersPage = () => {
                     <ul className="space-y-2">
                       {searchResults.map((user) => (
                         <Link to={routes.user({id: user.id})}>
-                        <li key={user.id} className="flex items-center space-x-4 rounded-md p-2 hover:bg-accent">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
-                            <User className="h-6 w-6 text-primary-foreground"/>
-                          </div>
-                          <div className="space-y-1">
-                            <p className="text-sm font-medium leading-none">{user.name}</p>
-                            <p className="text-sm text-muted-foreground">{user.attestation}</p>
-                          </div>
-                        </li>
+                          <li key={user.id} className="flex items-center space-x-4 rounded-md p-2 hover:bg-accent">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
+                              <User className="h-6 w-6 text-primary-foreground"/>
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-sm font-medium leading-none">{user.name}</p>
+                              <div className="flex flex-row space-x-2">
+                                <p className="text-sm text-muted-foreground">{user.occupation}</p>
+                                <p className="text-sm text-muted-foreground">{user.attestation}</p>
+                                <p className="text-sm text-muted-foreground">{user.qualification}</p>
+                              </div>
+                            </div>
+                          </li>
                         </Link>
                       ))}
                     </ul>
