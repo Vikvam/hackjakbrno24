@@ -18,7 +18,7 @@ generator client {
 // stem::string, attestation::string, qualification::string, RTG_preference::float?, CT_preference::float?
 model User {
   id              Int               @id @default(autoincrement())
-  name            String?           @unique
+  name            String?
   occupation      String // doctor, nurse, rtgAssistant
   stem            String?
   attestation     String?
