@@ -7,7 +7,6 @@ import {
   FieldError,
   Label,
   DatetimeLocalField,
-  TextField,
   NumberField,
   Submit,
 } from '@redwoodjs/forms'
@@ -61,76 +60,22 @@ const ShiftSlotForm = (props: ShiftSlotFormProps) => {
         <FieldError name="date" className="rw-field-error" />
 
         <Label
-          name="type"
+          name="shiftId"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Type
-        </Label>
-
-        <TextField
-          name="type"
-          defaultValue={props.shiftSlot?.type}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
-
-        <FieldError name="type" className="rw-field-error" />
-
-        <Label
-          name="department"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Department
-        </Label>
-
-        <TextField
-          name="department"
-          defaultValue={props.shiftSlot?.department}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
-
-        <FieldError name="department" className="rw-field-error" />
-
-        <Label
-          name="amount"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Amount
+          Shift id
         </Label>
 
         <NumberField
-          name="amount"
-          defaultValue={props.shiftSlot?.amount}
+          name="shiftId"
+          defaultValue={props.shiftSlot?.shiftId}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
         />
 
-        <FieldError name="amount" className="rw-field-error" />
-
-        <Label
-          name="qualification"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Qualification
-        </Label>
-
-        <TextField
-          name="qualification"
-          defaultValue={props.shiftSlot?.qualification}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
-
-        <FieldError name="qualification" className="rw-field-error" />
+        <FieldError name="shiftId" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

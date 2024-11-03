@@ -1,7 +1,7 @@
 import type {
-  DeleteShiftSlotMutation,
-  DeleteShiftSlotMutationVariables,
-  FindShiftSlots,
+  DeleteShiftMutation,
+  DeleteShiftMutationVariables,
+  FindShifts,
 } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
@@ -9,24 +9,24 @@ import { useMutation } from '@redwoodjs/web'
 import type { TypedDocumentNode } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import { QUERY } from 'src/components/ShiftSlot/ShiftSlotsCell'
-import { timeTag, truncate } from 'src/lib/formatters'
+import { QUERY } from 'src/components/Shift/ShiftsCell'
+import { truncate } from 'src/lib/formatters'
 
-const DELETE_SHIFT_SLOT_MUTATION: TypedDocumentNode<
-  DeleteShiftSlotMutation,
-  DeleteShiftSlotMutationVariables
+const DELETE_SHIFT_MUTATION: TypedDocumentNode<
+  DeleteShiftMutation,
+  DeleteShiftMutationVariables
 > = gql`
-  mutation DeleteShiftSlotMutation($id: Int!) {
-    deleteShiftSlot(id: $id) {
+  mutation DeleteShiftMutation($id: Int!) {
+    deleteShift(id: $id) {
       id
     }
   }
 `
 
-const ShiftSlotsList = ({ shiftSlots }: FindShiftSlots) => {
-  const [deleteShiftSlot] = useMutation(DELETE_SHIFT_SLOT_MUTATION, {
+const ShiftsList = ({ shifts }: FindShifts) => {
+  const [deleteShift] = useMutation(DELETE_SHIFT_MUTATION, {
     onCompleted: () => {
-      toast.success('ShiftSlot deleted')
+      toast.success('Shift deleted')
     },
     onError: (error) => {
       toast.error(error.message)
@@ -38,9 +38,9 @@ const ShiftSlotsList = ({ shiftSlots }: FindShiftSlots) => {
     awaitRefetchQueries: true,
   })
 
-  const onDeleteClick = (id: DeleteShiftSlotMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete shiftSlot ' + id + '?')) {
-      deleteShiftSlot({ variables: { id } })
+  const onDeleteClick = (id: DeleteShiftMutationVariables['id']) => {
+    if (confirm('Are you sure you want to delete shift ' + id + '?')) {
+      deleteShift({ variables: { id } })
     }
   }
 
@@ -50,38 +50,44 @@ const ShiftSlotsList = ({ shiftSlots }: FindShiftSlots) => {
         <thead>
           <tr>
             <th>Id</th>
-            <th>Date</th>
-            <th>Shift id</th>
+            <th>Type</th>
+            <th>Employee type</th>
+            <th>Department</th>
+            <th>Amount</th>
+            <th>Qualification</th>
             <th>&nbsp;</th>
           </tr>
         </thead>
         <tbody>
-          {shiftSlots.map((shiftSlot) => (
-            <tr key={shiftSlot.id}>
-              <td>{truncate(shiftSlot.id)}</td>
-              <td>{timeTag(shiftSlot.date)}</td>
-              <td>{truncate(shiftSlot.shiftId)}</td>
+          {shifts.map((shift) => (
+            <tr key={shift.id}>
+              <td>{truncate(shift.id)}</td>
+              <td>{truncate(shift.type)}</td>
+              <td>{truncate(shift.employeeType)}</td>
+              <td>{truncate(shift.department)}</td>
+              <td>{truncate(shift.amount)}</td>
+              <td>{truncate(shift.qualification)}</td>
               <td>
                 <nav className="rw-table-actions">
                   <Link
-                    to={routes.shiftSlot({ id: shiftSlot.id })}
-                    title={'Show shiftSlot ' + shiftSlot.id + ' detail'}
+                    to={routes.shift({ id: shift.id })}
+                    title={'Show shift ' + shift.id + ' detail'}
                     className="rw-button rw-button-small"
                   >
                     Show
                   </Link>
                   <Link
-                    to={routes.editShiftSlot({ id: shiftSlot.id })}
-                    title={'Edit shiftSlot ' + shiftSlot.id}
+                    to={routes.editShift({ id: shift.id })}
+                    title={'Edit shift ' + shift.id}
                     className="rw-button rw-button-small rw-button-blue"
                   >
                     Edit
                   </Link>
                   <button
                     type="button"
-                    title={'Delete shiftSlot ' + shiftSlot.id}
+                    title={'Delete shift ' + shift.id}
                     className="rw-button rw-button-small rw-button-red"
-                    onClick={() => onDeleteClick(shiftSlot.id)}
+                    onClick={() => onDeleteClick(shift.id)}
                   >
                     Delete
                   </button>
@@ -95,4 +101,4 @@ const ShiftSlotsList = ({ shiftSlots }: FindShiftSlots) => {
   )
 }
 
-export default ShiftSlotsList
+export default ShiftsList

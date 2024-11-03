@@ -62,20 +62,8 @@ const ShiftSlot = ({ shiftSlot }: Props) => {
               <td>{timeTag(shiftSlot.date)}</td>
             </tr>
             <tr>
-              <th>Type</th>
-              <td>{shiftSlot.type}</td>
-            </tr>
-            <tr>
-              <th>Department</th>
-              <td>{shiftSlot.department}</td>
-            </tr>
-            <tr>
-              <th>Amount</th>
-              <td>{shiftSlot.amount}</td>
-            </tr>
-            <tr>
-              <th>Qualification</th>
-              <td>{shiftSlot.qualification}</td>
+              <th>Shift id</th>
+              <td>{shiftSlot.shiftId}</td>
             </tr>
           </tbody>
         </table>
