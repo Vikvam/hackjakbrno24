@@ -41,11 +41,20 @@ const Routes = () => {
           <Route path="/users/{id:Int}" page={UserUserPage} name="user"/>
           <Route path="/users" page={UserUsersPage} name="users"/>
         </Set>
+        <Set wrap={ScaffoldLayout} title="UserSchedules" titleTo="userSchedules" buttonLabel="New UserSchedule"
+             buttonTo="newUserSchedule">
+          <Route path="/user-schedules/new" page={UserScheduleNewUserSchedulePage} name="newUserSchedule"/>
+          <Route path="/user-schedules/{id:Int}/{type:String}/edit" page={UserScheduleEditUserSchedulePage}
+                 name="editUserSchedule"/>
+          <Route path="/user-schedules/{id:Int}" page={UserScheduleUserSchedulePage} name="userSchedule"/>
+          <Route path="/user-schedules" page={UserScheduleUserSchedulesPage} name="userSchedules"/>
+          <Route notfound page={NotFoundPage}/>
+        </Set>
       </Set>
       <Set wrap={ScaffoldLayout} title="UserSchedules" titleTo="userSchedules" buttonLabel="New UserSchedule"
            buttonTo="newUserSchedule">
         <Route path="/user-schedules/new" page={UserScheduleNewUserSchedulePage} name="newUserSchedule"/>
-        <Route path="/user-schedules/{id:Int}/edit" page={UserScheduleEditUserSchedulePage} name="editUserSchedule"/>
+        <Route path="/user-schedules/{id:Int}/{type:String}/edit" page={UserScheduleEditUserSchedulePage} name="editUserSchedule"/>
         <Route path="/user-schedules/{id:Int}" page={UserScheduleUserSchedulePage} name="userSchedule"/>
         <Route path="/user-schedules" page={UserScheduleUserSchedulesPage} name="userSchedules"/>
       </Set>

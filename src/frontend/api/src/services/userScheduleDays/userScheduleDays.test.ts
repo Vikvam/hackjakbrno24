@@ -43,12 +43,11 @@ describe('userScheduleDays', () => {
       input: {
         userScheduleId: scenario.userScheduleDay.two.userScheduleId,
         userId: scenario.userScheduleDay.two.userId,
-        day: '2024-11-02T18:33:11.423Z',
-        dayPart: 4712679,
-        preference: 4116440,
-        reasonCode: 7808839,
+        preference: 4754853,
+        reasonCode: 6196010,
         reasonText: 'String',
-        updatedAt: '2024-11-02T18:33:11.423Z',
+        updatedAt: '2024-11-03T01:48:59.158Z',
+        shiftSlotId: scenario.userScheduleDay.two.shiftSlotId,
       },
     })
 
@@ -56,12 +55,11 @@ describe('userScheduleDays', () => {
       scenario.userScheduleDay.two.userScheduleId
     )
     expect(result.userId).toEqual(scenario.userScheduleDay.two.userId)
-    expect(result.day).toEqual(new Date('2024-11-02T18:33:11.423Z'))
-    expect(result.dayPart).toEqual(4712679)
-    expect(result.preference).toEqual(4116440)
-    expect(result.reasonCode).toEqual(7808839)
+    expect(result.preference).toEqual(4754853)
+    expect(result.reasonCode).toEqual(6196010)
     expect(result.reasonText).toEqual('String')
-    expect(result.updatedAt).toEqual(new Date('2024-11-02T18:33:11.423Z'))
+    expect(result.updatedAt).toEqual(new Date('2024-11-03T01:48:59.158Z'))
+    expect(result.shiftSlotId).toEqual(scenario.userScheduleDay.two.shiftSlotId)
   })
 
   scenario('updates a userScheduleDay', async (scenario: StandardScenario) => {
@@ -70,10 +68,10 @@ describe('userScheduleDays', () => {
     })) as UserScheduleDay
     const result = await updateUserScheduleDay({
       id: original.id,
-      input: { day: '2024-11-03T18:33:11.424Z' },
+      input: { preference: 9745823 },
     })
 
-    expect(result.day).toEqual(new Date('2024-11-03T18:33:11.424Z'))
+    expect(result.preference).toEqual(9745823)
   })
 
   scenario('deletes a userScheduleDay', async (scenario: StandardScenario) => {

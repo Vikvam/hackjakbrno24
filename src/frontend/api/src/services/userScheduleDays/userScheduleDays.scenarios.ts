@@ -5,38 +5,68 @@ export const standard = defineScenario<Prisma.UserScheduleDayCreateArgs>({
   userScheduleDay: {
     one: {
       data: {
-        day: '2024-11-02T18:33:11.450Z',
-        dayPart: 6154168,
-        preference: 1435242,
-        reasonCode: 1626031,
+        preference: 4664458,
+        reasonCode: 7437711,
         reasonText: 'String',
-        updatedAt: '2024-11-02T18:33:11.450Z',
+        updatedAt: '2024-11-03T01:48:59.212Z',
         userSchedule: {
           create: {
-            schedule: '2024-11-02T18:33:11.450Z',
-            updatedAt: '2024-11-02T18:33:11.450Z',
-            user: { create: {} },
+            type: 'String',
+            month: 5795361,
+            schedule: '2024-11-03T01:48:59.212Z',
+            updatedAt: '2024-11-03T01:48:59.212Z',
+            user: { create: { occupation: 'String' } },
           },
         },
-        user: { create: {} },
+        user: { create: { occupation: 'String' } },
+        shiftSlot: {
+          create: {
+            date: '2024-11-03T01:48:59.212Z',
+            shift: {
+              create: {
+                type: 'String',
+                employeeType: 'String',
+                department: 'String',
+                amount: 3493135,
+                qualification: 'String',
+              },
+            },
+            user: { create: { occupation: 'String' } },
+          },
+        },
       },
     },
     two: {
       data: {
-        day: '2024-11-02T18:33:11.450Z',
-        dayPart: 5144414,
-        preference: 2536605,
-        reasonCode: 205109,
+        preference: 5105159,
+        reasonCode: 8277340,
         reasonText: 'String',
-        updatedAt: '2024-11-02T18:33:11.450Z',
+        updatedAt: '2024-11-03T01:48:59.212Z',
         userSchedule: {
           create: {
-            schedule: '2024-11-02T18:33:11.450Z',
-            updatedAt: '2024-11-02T18:33:11.450Z',
-            user: { create: {} },
+            type: 'String',
+            month: 9729303,
+            schedule: '2024-11-03T01:48:59.212Z',
+            updatedAt: '2024-11-03T01:48:59.212Z',
+            user: { create: { occupation: 'String' } },
           },
         },
-        user: { create: {} },
+        user: { create: { occupation: 'String' } },
+        shiftSlot: {
+          create: {
+            date: '2024-11-03T01:48:59.212Z',
+            shift: {
+              create: {
+                type: 'String',
+                employeeType: 'String',
+                department: 'String',
+                amount: 7718172,
+                qualification: 'String',
+              },
+            },
+            user: { create: { occupation: 'String' } },
+          },
+        },
       },
     },
   },

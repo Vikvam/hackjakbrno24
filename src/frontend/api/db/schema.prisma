@@ -18,8 +18,8 @@ generator client {
 // stem::string, attestation::string, qualification::string, RTG_preference::float?, CT_preference::float?
 model User {
   id              Int               @id @default(autoincrement())
-  name            String?
-  occupation      String            // doctor, nurse, rtgAssistant
+  name            String?           @unique
+  occupation      String // doctor, nurse, rtgAssistant
   stem            String?
   attestation     String?
   qualification   String?
@@ -33,7 +33,9 @@ model UserSchedule {
   id              Int               @id @default(autoincrement())
   userId          Int
   user            User              @relation(fields: [userId], references: [id])
-  type            String            // monthly, weekly
+  type            String // monthly, weekly
+  month           Int
+  week            Int?
   schedule        DateTime
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -46,30 +48,23 @@ model UserScheduleDay {
   userSchedule   UserSchedule @relation(fields: [userScheduleId], references: [id])
   userId         Int
   user           User         @relation(fields: [userId], references: [id])
-  day            DateTime
-  dayPart        Int
   preference     Int
   reasonCode     Int
   reasonText     String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  Shift          Shift?       @relation(fields: [shiftId], references: [id])
+  shiftId        Int?
 }
 
 model Shift {
-  id            Int         @id @default(autoincrement())
+  id            Int               @id @default(autoincrement())
   type          String
   employeeType  String
   department    String
   amount        Int
   qualification String
-  ShiftSlot     ShiftSlot[]
-}
-
-model ShiftSlot {
-  id      Int      @id @default(autoincrement())
-  date    DateTime
-  shift   Shift    @relation(fields: [shiftId], references: [id])
-  shiftId Int
+  shiftSlot     UserScheduleDay[]
 }
 
 // model ShiftPlacement {
