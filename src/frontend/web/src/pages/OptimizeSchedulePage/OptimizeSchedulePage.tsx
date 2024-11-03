@@ -1,12 +1,31 @@
-import { Form, TextField, Submit } from '@redwoodjs/forms'
-import { useState } from 'react'
+import {Form, TextField, Submit, Label} from '@redwoodjs/forms'
+import {useEffect, useState} from 'react'
 
 const OptimizeSchedulePage = () => {
+  const [scheduleSolution, setScheduleData] = useState<Object>(null)
+
+  useEffect(() => {
+    const loadScheduleData = async () => {
+      try {
+        const response = await fetch('42.solution.json')
+        const data = await response.json()
+        setScheduleData(data)
+      } catch (error) {
+        console.error('Error loading schedule data:', error)
+      }
+    }
+    loadScheduleData()
+  }, [])
+
   const [selectedPeriod, setSelectedPeriod] = useState({
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
     week: null
   })
+
+  const getDaysInMonth = (year: number, month: number) => {
+    return new Date(year, month, 0).getDate()
+  }
 
   const onSubmit = (data) => {
     setSelectedPeriod({
@@ -19,8 +38,6 @@ const OptimizeSchedulePage = () => {
 
   return (
     <>
-      <MetaTags title="Optimize Schedule" description="Schedule optimization page" />
-
       <div className="rw-segment">
         <header className="rw-segment-header">
           <h2 className="rw-heading rw-heading-secondary">
