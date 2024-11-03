@@ -51,6 +51,16 @@ export const deleteShift: MutationResolvers['deleteShift'] = ({id}) => {
   })
 }
 
+export const deleteShifts: MutationResolvers['deleteShifts'] = async ({ department, employeeType }) => {
+  const result = await db.shift.deleteMany({
+    where: {
+      department: department,
+      employeeType: employeeType,
+    },
+  })
+  return result.count > 0
+}
+
 export const Shift: ShiftRelationResolvers = {
   ShiftSlot: (_obj, {root}) => {
     return db.shift.findUnique({where: {id: root?.id}}).ShiftSlot()

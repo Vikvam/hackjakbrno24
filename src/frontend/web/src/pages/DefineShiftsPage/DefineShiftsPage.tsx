@@ -42,13 +42,11 @@ const CREATE_SHIFT_MUTATION_PAGE = gql`
   }
 `
 
-// const DELETE_SHIFTS_MUTATION_PAGE = gql`
-//   mutation DeleteShiftsMutationPage($department: String!, $employeeType: String!) {
-//     deleteShifts(department: $department, employeeType: $employeeType) {
-//       count
-//     }
-//   }
-//`
+const DELETE_SHIFTS_MUTATION_PAGE = gql`
+  mutation DeleteShiftsMutationPage($department: String!, $employeeType: String!) {
+    deleteShifts(department: $department, employeeType: $employeeType)
+  }
+`
 
 const GET_SHIFT_DEFINITION = gql`
   query shiftsByDepartmentAndEmployeeType($department: String!, $employeeType: String!) {
@@ -69,7 +67,7 @@ const DefineShiftsPage = ({initialData = []}) => {
   const [selectedEmployeeType, setSelectedEmployeeType] = useState<EmployeeType>('Doctor')
   const [editingColumn, setEditingColumn] = useState<{ index: number, name: string } | null>(null)
   const [createShift] = useMutation(CREATE_SHIFT_MUTATION_PAGE)
-  // const [deleteShifts] = useMutation(DELETE_SHIFTS_MUTATION_PAGE)
+  const [deleteShifts] = useMutation(DELETE_SHIFTS_MUTATION_PAGE)
 
   const {data, loading, error} = useQuery(GET_SHIFT_DEFINITION, {
     variables: {department: selectedDepartment, employeeType: selectedEmployeeType},
@@ -77,6 +75,8 @@ const DefineShiftsPage = ({initialData = []}) => {
 
   useEffect(() => {
     if (data && data.shiftsByDepartmentAndEmployeeType) {
+
+      console.log("Loading data: ", data.shiftsByDepartmentAndEmployeeType)
       const skillLevelsSet = new Set<string>()
       const shiftsByType = new Map<string, { id: number, type: string, amounts: Record<string, number> }>()
 
@@ -254,14 +254,14 @@ const DefineShiftsPage = ({initialData = []}) => {
   const saveChanges = async () => {
     console.log('Saving changes:', shiftDefinitions)
 
-    // const currentDefinition = getCurrentDefinition()
-    // await deleteShifts({
-    //   variables: {
-    //     department: currentDefinition.department,
-    //     employeeType: 'Doctor',
-    //   },
-    // })
+    const currentDefinition = getCurrentDefinition()
 
+    const deleteResult = await deleteShifts({
+      variables: {
+        department: currentDefinition.department,
+        employeeType: currentDefinition.employeeType,
+      },
+    })
 
     for (const definition of shiftDefinitions) {
       for (const slot of definition.slots) {
@@ -280,7 +280,6 @@ const DefineShiftsPage = ({initialData = []}) => {
         }
       }
     }
-    console.log('Changes saved')
   }
 
   const currentDefinition = getCurrentDefinition()
