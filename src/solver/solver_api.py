@@ -1,4 +1,6 @@
 # solver_api.py
+import json
+
 from fastapi import FastAPI, BackgroundTasks
 from pydantic import BaseModel
 import time
@@ -40,10 +42,9 @@ def get_result(job_id: str):
     job = jobs.get(job_id)
     if job is None:
         return {"status": "Job not found"}
-    if "status" in job:
-        return job
     else:
-        return job
+        with open("42.solution.json", "w") as f:
+            return json.loads(f.read())
 
 
 if __name__ == "__main__":
