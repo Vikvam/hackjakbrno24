@@ -78,22 +78,24 @@ const DefineShiftsPage = ({initialData = []}) => {
   useEffect(() => {
     if (data && data.shiftsByDepartmentAndEmployeeType) {
       const skillLevelsSet = new Set<string>()
-      const slotsMap = new Map<number, ShiftSlot>()
+      const shiftsByType = new Map<string, { id: number, type: string, amounts: Record<string, number> }>()
 
       data.shiftsByDepartmentAndEmployeeType.forEach(shift => {
         skillLevelsSet.add(shift.qualification)
-        if (!slotsMap.has(shift.id)) {
-          slotsMap.set(shift.id, {
+        if (!shiftsByType.has(shift.type)) {
+          shiftsByType.set(shift.type, {
             id: shift.id,
             type: shift.type,
             amounts: {}
           })
         }
-        slotsMap.get(shift.id)!.amounts[shift.qualification] = shift.amount
+        const currentShift = shiftsByType.get(shift.type)!
+        currentShift.id = Math.min(currentShift.id, shift.id)
+        currentShift.amounts[shift.qualification] = (currentShift.amounts[shift.qualification] || 0) + shift.amount
       })
 
       const skillLevels = Array.from(skillLevelsSet)
-      const slots = Array.from(slotsMap.values()).map(slot => {
+      const slots = Array.from(shiftsByType.values()).map(slot => {
         skillLevels.forEach(level => {
           if (!(level in slot.amounts)) {
             slot.amounts[level] = 0
