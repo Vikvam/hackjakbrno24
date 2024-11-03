@@ -1,6 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "src/components/ui/table"
 import UserScheduleDay from "src/components/UserScheduleDayCell";
 import {CreateUserScheduleDayInput, FindUserScheduleDayQuery2} from "types/graphql";
+import {useState} from "react";
+import {SelectField} from "@redwoodjs/forms";
 
 const FindCellForDayPart = (cells, dayIndex: number, part: number) => {
   for (let i = 0; i < cells.length; i++) {
@@ -15,6 +17,7 @@ export function WeeklyScheduleComponent(props) {
   const daysOfWeek = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So']
   const partsOfDay = ['Ranní', 'Odpolední', 'Večerní', 'Noční']
   const cells = props.cells.map((cell) => cell.data.createUserScheduleDay)
+  let [preferences, setPreferences] = useState({})
   console.log("Cells", cells)
   if (!cells || cells.length === 0) {
     return <div>Loading...</div>
@@ -51,9 +54,13 @@ export function WeeklyScheduleComponent(props) {
               <TableCell className="font-medium">{part}</TableCell>
               {nextWeekDates.map((_, dayIndex) => (
                 <TableCell key={dayIndex} className="text-center">
-                  <UserScheduleDay id={
-                    FindCellForDayPart(cells, dayIndex, partIndex+1).id
-                  } part={part} dayIndex={dayIndex} edit={props.edit}></UserScheduleDay>
+                  <SelectField name={"todo"}>
+                    <option value={1}>jako silne chcu</option>
+                    <option value={2}>chcu</option>
+                    <option value={3}>jedno jako</option>
+                    <option value={4}>nechcu</option>
+                    <option value={5}>jako vubec nechcu</option>
+                  </SelectField>
                 </TableCell>
               ))}
             </TableRow>

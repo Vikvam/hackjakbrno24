@@ -28,6 +28,8 @@ const Routes = () => {
         <Route path="/shifts" page={ShiftShiftsPage} name="shifts" />
       </Set>
       <Set wrap={MainLayout}>
+      <Route path="/planovani-smen" page={PlanovaniSmenPage} name="planovaniSmen" />
+
         <Route path="/define-shifts" page={DefineShiftsPage} name="defineShifts"/>
         <Route path="/search-users" page={SearchUsersPage} name="searchUsers"/>
 

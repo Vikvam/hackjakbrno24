@@ -120,7 +120,10 @@ const UserScheduleForm = (props: UserScheduleFormProps) => {
   let userScheduleQuery;
   if (props.userSchedule) {
      userScheduleQuery = useQuery(QUERY_USER_SCHEDULE, {
-      variables: {id: props.userSchedule.id}
+      variables: {
+        id: props.userSchedule.id
+
+      }
     });
   }
   useEffect(() => {
