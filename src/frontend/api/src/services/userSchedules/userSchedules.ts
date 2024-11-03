@@ -42,6 +42,33 @@ export const deleteUserSchedule: MutationResolvers['deleteUserSchedule'] = ({
   })
 }
 
+export const userSchedulesByMonth = async ({ month }: { month: number }) => {
+  return db.userSchedule.findMany({
+    where: {
+      month: month,
+      type: 'monthly'
+    },
+    include: {
+      user: true,
+      UserScheduleDay: true
+    }
+  })
+}
+
+export const userSchedulesByWeek = async ({ month, week }: { month: number, week: number }) => {
+  return db.userSchedule.findMany({
+    where: {
+      month: month,
+      week: week,
+      type: 'weekly'
+    },
+    include: {
+      user: true,
+      UserScheduleDay: true
+    }
+  })
+}
+
 export const UserSchedule: UserScheduleRelationResolvers = {
   user: (_obj, { root }) => {
     return db.userSchedule.findUnique({ where: { id: root?.id } }).user()

@@ -15,6 +15,7 @@ import MainLayout from "src/layouts/MainLayout/MainLayout";
 const Routes = () => {
   return (
     <Router>
+      <Route path="/optimize-schedule/" page={OptimizeSchedulePage} name="optimizeSchedule" />
       <Set wrap={ScaffoldLayout} title="ShiftSlots" titleTo="shiftSlots" buttonLabel="New ShiftSlot" buttonTo="newShiftSlot">
         <Route path="/shift-slots/new" page={ShiftSlotNewShiftSlotPage} name="newShiftSlot" />
         <Route path="/shift-slots/{id:Int}/edit" page={ShiftSlotEditShiftSlotPage} name="editShiftSlot" />

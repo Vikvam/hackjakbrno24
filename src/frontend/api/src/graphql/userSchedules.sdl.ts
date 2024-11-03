@@ -42,4 +42,10 @@ export const schema = gql`
     ): UserSchedule! @requireAuth
     deleteUserSchedule(id: Int!): UserSchedule! @requireAuth
   }
+
+  type Query {
+    userSchedulesByMonth(month: Int!): [UserSchedule!]! @requireAuth
+    userSchedulesByWeek(month: Int!, week: Int!): [UserSchedule!]! @requireAuth
+  }
+
 `
