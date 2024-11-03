@@ -10,6 +10,7 @@ import {Plus, Trash2, Edit2} from 'lucide-react'
 import {useMutation} from '@redwoodjs/web'
 
 type Department = 'RTG' | 'CT'
+type EmployeeType = 'Doctor' | 'Nurse' | 'Assistant'
 
 interface ShiftSlot {
   id: number
@@ -20,11 +21,13 @@ interface ShiftSlot {
 interface ShiftDefinition {
   id: number
   department: Department
+  employeeType: EmployeeType
   skillLevels: string[]
   slots: ShiftSlot[]
 }
 
 const departments: Department[] = ['RTG', 'CT']
+const employeeTypes = ['Doctor', 'Nurse', 'Assistant']
 
 const CREATE_SHIFT_MUTATION_PAGE = gql`
   mutation CreateShiftMutationProper($input: CreateShiftInput!) {
@@ -50,21 +53,19 @@ const CREATE_SHIFT_MUTATION_PAGE = gql`
 const DefineShiftsPage = ({initialData = []}) => {
   const [shiftDefinitions, setShiftDefinitions] = useState<ShiftDefinition[]>(initialData)
   const [selectedDepartment, setSelectedDepartment] = useState<Department>('RTG')
+  const [selectedEmployeeType, setSelectedEmployeeType] = useState<EmployeeType>('Doctor')
   const [editingColumn, setEditingColumn] = useState<{ index: number, name: string } | null>(null)
   const [createShift] = useMutation(CREATE_SHIFT_MUTATION_PAGE)
   // const [deleteShifts] = useMutation(DELETE_SHIFTS_MUTATION_PAGE)
 
 
   const getCurrentDefinition = () => {
-    return shiftDefinitions.find(def => def.department === selectedDepartment) || {
+    return shiftDefinitions.find(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType) || {
       id: Date.now(),
       department: selectedDepartment,
-      skillLevels: ['L1'],
-      slots: [{
-        id: Date.now(),
-        type: 'L',
-        amounts: {L1: 0}
-      }]
+      employeeType: selectedEmployeeType,
+      skillLevels: [],
+      slots: []
     }
   }
 
@@ -84,8 +85,8 @@ const DefineShiftsPage = ({initialData = []}) => {
       )
 
       const updatedDef = {...currentDef, slots: updatedSlots}
-      return prevDefs.some(def => def.department === selectedDepartment)
-        ? prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+      return prevDefs.some(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType)
+        ? prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
         : [...prevDefs, updatedDef]
     })
   }
@@ -105,8 +106,8 @@ const DefineShiftsPage = ({initialData = []}) => {
         ]
       }
 
-      return prevDefs.some(def => def.department === selectedDepartment)
-        ? prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+      return prevDefs.some(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType)
+        ? prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
         : [...prevDefs, updatedDef]
     })
   }
@@ -121,14 +122,14 @@ const DefineShiftsPage = ({initialData = []}) => {
         slots: currentDef.slots.filter(slot => slot.id !== slotId)
       }
 
-      return prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+      return prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
     })
   }
 
   const addColumn = () => {
     setShiftDefinitions(prevDefs => {
       const currentDef = getCurrentDefinition()
-      const newColumnName = `New Shift ${currentDef.skillLevels.length + 1}`
+      const newColumnName = `L${currentDef.skillLevels.length + 1}`
       const updatedDef = {
         ...currentDef,
         skillLevels: [...currentDef.skillLevels, newColumnName],
@@ -138,8 +139,8 @@ const DefineShiftsPage = ({initialData = []}) => {
         }))
       }
 
-      return prevDefs.some(def => def.department === selectedDepartment)
-        ? prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+      return prevDefs.some(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType)
+        ? prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
         : [...prevDefs, updatedDef]
     })
   }
@@ -158,7 +159,7 @@ const DefineShiftsPage = ({initialData = []}) => {
         })
       }
 
-      return prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+      return prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
     })
   }
 
@@ -185,7 +186,7 @@ const DefineShiftsPage = ({initialData = []}) => {
           })
         }
 
-        return prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+        return prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
       })
       setEditingColumn(null)
     }
@@ -210,7 +211,7 @@ const DefineShiftsPage = ({initialData = []}) => {
             variables: {
               input: {
                 type: slot.type,
-                employeeType: 'Doctor',
+                employeeType: definition.employeeType,
                 department: definition.department,
                 amount: amount,
                 qualification: skillLevel,
@@ -241,7 +242,19 @@ const DefineShiftsPage = ({initialData = []}) => {
             </SelectContent>
           </Select>
         </div>
-
+        <div className="flex-1">
+          <Label htmlFor="employeeType">Employee Type</Label>
+          <Select onValueChange={(value: EmployeeType) => setSelectedEmployeeType(value)} value={selectedEmployeeType}>
+            <SelectTrigger id="employeeType">
+              <SelectValue placeholder="Select Employee Type"/>
+            </SelectTrigger>
+            <SelectContent>
+              {employeeTypes.map(typ => (
+                <SelectItem key={typ} value={typ}>{typ}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="overflow-x-auto bg-white rounded-lg p-4 flex flex-col">
