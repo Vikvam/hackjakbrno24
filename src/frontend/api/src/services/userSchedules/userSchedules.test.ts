@@ -35,14 +35,18 @@ describe('userSchedules', () => {
     const result = await createUserSchedule({
       input: {
         userId: scenario.userSchedule.two.userId,
-        schedule: '2024-11-01T22:37:15.554Z',
-        updatedAt: '2024-11-01T22:37:15.554Z',
+        type: 'String',
+        month: 3774057,
+        schedule: '2024-11-03T01:48:12.120Z',
+        updatedAt: '2024-11-03T01:48:12.120Z',
       },
     })
 
     expect(result.userId).toEqual(scenario.userSchedule.two.userId)
-    expect(result.schedule).toEqual(new Date('2024-11-01T22:37:15.554Z'))
-    expect(result.updatedAt).toEqual(new Date('2024-11-01T22:37:15.554Z'))
+    expect(result.type).toEqual('String')
+    expect(result.month).toEqual(3774057)
+    expect(result.schedule).toEqual(new Date('2024-11-03T01:48:12.120Z'))
+    expect(result.updatedAt).toEqual(new Date('2024-11-03T01:48:12.120Z'))
   })
 
   scenario('updates a userSchedule', async (scenario: StandardScenario) => {
@@ -51,10 +55,10 @@ describe('userSchedules', () => {
     })) as UserSchedule
     const result = await updateUserSchedule({
       id: original.id,
-      input: { schedule: '2024-11-02T22:37:15.554Z' },
+      input: { type: 'String2' },
     })
 
-    expect(result.schedule).toEqual(new Date('2024-11-02T22:37:15.554Z'))
+    expect(result.type).toEqual('String2')
   })
 
   scenario('deletes a userSchedule', async (scenario: StandardScenario) => {
