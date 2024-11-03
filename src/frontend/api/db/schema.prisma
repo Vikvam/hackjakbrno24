@@ -18,7 +18,7 @@ generator client {
 // stem::string, attestation::string, qualification::string, RTG_preference::float?, CT_preference::float?
 model User {
   id              Int               @id @default(autoincrement())
-  name            String?           @unique
+  name            String?
   occupation      String // doctor, nurse, rtgAssistant
   stem            String?
   attestation     String?
@@ -33,10 +33,9 @@ model UserSchedule {
   id              Int               @id @default(autoincrement())
   userId          Int
   user            User              @relation(fields: [userId], references: [id])
-  type            String // monthly, weekly
+  type            String            // monthly, weekly
   month           Int
   week            Int?
-  schedule        DateTime
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   UserScheduleDay UserScheduleDay[]
@@ -55,6 +54,7 @@ model UserScheduleDay {
   updatedAt      DateTime     @updatedAt
   Shift          Shift?       @relation(fields: [shiftId], references: [id])
   shiftId        Int?
+  day            DateTime
 }
 
 model Shift {

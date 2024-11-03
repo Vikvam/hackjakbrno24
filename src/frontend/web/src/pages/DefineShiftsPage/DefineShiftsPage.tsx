@@ -1,6 +1,6 @@
 // import { Link, routes } from '@redwoodjs/router'
-import {Metadata} from '@redwoodjs/web'
-import {useState} from 'react'
+import {Metadata, useQuery} from '@redwoodjs/web'
+import {useEffect, useState} from 'react'
 import {Button} from "src/components/ui/button"
 import {Input} from "src/components/ui/input"
 import {Label} from "src/components/ui/label"
@@ -10,6 +10,7 @@ import {Plus, Trash2, Edit2} from 'lucide-react'
 import {useMutation} from '@redwoodjs/web'
 
 type Department = 'RTG' | 'CT'
+type EmployeeType = 'Doctor' | 'Nurse' | 'Assistant'
 
 interface ShiftSlot {
   id: number
@@ -20,11 +21,13 @@ interface ShiftSlot {
 interface ShiftDefinition {
   id: number
   department: Department
+  employeeType: EmployeeType
   skillLevels: string[]
   slots: ShiftSlot[]
 }
 
 const departments: Department[] = ['RTG', 'CT']
+const employeeTypes = ['Doctor', 'Nurse', 'Assistant']
 
 const CREATE_SHIFT_MUTATION_PAGE = gql`
   mutation CreateShiftMutationProper($input: CreateShiftInput!) {
@@ -39,33 +42,90 @@ const CREATE_SHIFT_MUTATION_PAGE = gql`
   }
 `
 
-// const DELETE_SHIFTS_MUTATION_PAGE = gql`
-//   mutation DeleteShiftsMutationPage($department: String!, $employeeType: String!) {
-//     deleteShifts(department: $department, employeeType: $employeeType) {
-//       count
-//     }
-//   }
-//`
+const DELETE_SHIFTS_MUTATION_PAGE = gql`
+  mutation DeleteShiftsMutationPage($department: String!, $employeeType: String!) {
+    deleteShifts(department: $department, employeeType: $employeeType)
+  }
+`
+
+const GET_SHIFT_DEFINITION = gql`
+  query shiftsByDepartmentAndEmployeeType($department: String!, $employeeType: String!) {
+    shiftsByDepartmentAndEmployeeType(department: $department, employeeType: $employeeType) {
+      id
+      type
+      employeeType
+      department
+      amount
+      qualification
+    }
+  }
+`
 
 const DefineShiftsPage = ({initialData = []}) => {
   const [shiftDefinitions, setShiftDefinitions] = useState<ShiftDefinition[]>(initialData)
   const [selectedDepartment, setSelectedDepartment] = useState<Department>('RTG')
+  const [selectedEmployeeType, setSelectedEmployeeType] = useState<EmployeeType>('Doctor')
   const [editingColumn, setEditingColumn] = useState<{ index: number, name: string } | null>(null)
   const [createShift] = useMutation(CREATE_SHIFT_MUTATION_PAGE)
-  // const [deleteShifts] = useMutation(DELETE_SHIFTS_MUTATION_PAGE)
+  const [deleteShifts] = useMutation(DELETE_SHIFTS_MUTATION_PAGE)
 
+  const {data, loading, error} = useQuery(GET_SHIFT_DEFINITION, {
+    variables: {department: selectedDepartment, employeeType: selectedEmployeeType},
+  })
+
+  useEffect(() => {
+    if (data && data.shiftsByDepartmentAndEmployeeType) {
+
+      console.log("Loading data: ", data.shiftsByDepartmentAndEmployeeType)
+      const skillLevelsSet = new Set<string>()
+      const shiftsByType = new Map<string, { id: number, type: string, amounts: Record<string, number> }>()
+
+      data.shiftsByDepartmentAndEmployeeType.forEach(shift => {
+        skillLevelsSet.add(shift.qualification)
+        if (!shiftsByType.has(shift.type)) {
+          shiftsByType.set(shift.type, {
+            id: shift.id,
+            type: shift.type,
+            amounts: {}
+          })
+        }
+        const currentShift = shiftsByType.get(shift.type)!
+        currentShift.id = Math.min(currentShift.id, shift.id)
+        currentShift.amounts[shift.qualification] = (currentShift.amounts[shift.qualification] || 0) + shift.amount
+      })
+
+      const skillLevels = Array.from(skillLevelsSet)
+      const slots = Array.from(shiftsByType.values()).map(slot => {
+        skillLevels.forEach(level => {
+          if (!(level in slot.amounts)) {
+            slot.amounts[level] = 0
+          }
+        })
+        return slot
+      })
+
+      const shiftData = [{
+        id: Date.now(),
+        department: selectedDepartment,
+        employeeType: selectedEmployeeType,
+        skillLevels,
+        slots
+      }]
+
+      setShiftDefinitions(shiftData)
+    }
+  }, [data])
 
   const getCurrentDefinition = () => {
-    return shiftDefinitions.find(def => def.department === selectedDepartment) || {
+
+    const def = shiftDefinitions.find(def => def.department === selectedDepartment && def.employeeType === selectedEmployeeType) || {
       id: Date.now(),
       department: selectedDepartment,
-      skillLevels: ['L1'],
-      slots: [{
-        id: Date.now(),
-        type: 'L',
-        amounts: {L1: 0}
-      }]
+      employeeType: selectedEmployeeType,
+      skillLevels: [],
+      slots: []
     }
+    return def
   }
 
   const handleInputChange = (slotId: number, field: 'type' | string, value: string) => {
@@ -84,8 +144,8 @@ const DefineShiftsPage = ({initialData = []}) => {
       )
 
       const updatedDef = {...currentDef, slots: updatedSlots}
-      return prevDefs.some(def => def.department === selectedDepartment)
-        ? prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+      return prevDefs.some(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType)
+        ? prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
         : [...prevDefs, updatedDef]
     })
   }
@@ -105,8 +165,8 @@ const DefineShiftsPage = ({initialData = []}) => {
         ]
       }
 
-      return prevDefs.some(def => def.department === selectedDepartment)
-        ? prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+      return prevDefs.some(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType)
+        ? prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
         : [...prevDefs, updatedDef]
     })
   }
@@ -121,14 +181,14 @@ const DefineShiftsPage = ({initialData = []}) => {
         slots: currentDef.slots.filter(slot => slot.id !== slotId)
       }
 
-      return prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+      return prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
     })
   }
 
   const addColumn = () => {
     setShiftDefinitions(prevDefs => {
       const currentDef = getCurrentDefinition()
-      const newColumnName = `New Shift ${currentDef.skillLevels.length + 1}`
+      const newColumnName = `L${currentDef.skillLevels.length + 1}`
       const updatedDef = {
         ...currentDef,
         skillLevels: [...currentDef.skillLevels, newColumnName],
@@ -138,8 +198,8 @@ const DefineShiftsPage = ({initialData = []}) => {
         }))
       }
 
-      return prevDefs.some(def => def.department === selectedDepartment)
-        ? prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+      return prevDefs.some(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType)
+        ? prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
         : [...prevDefs, updatedDef]
     })
   }
@@ -158,7 +218,7 @@ const DefineShiftsPage = ({initialData = []}) => {
         })
       }
 
-      return prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+      return prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
     })
   }
 
@@ -185,7 +245,7 @@ const DefineShiftsPage = ({initialData = []}) => {
           })
         }
 
-        return prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
+        return prevDefs.map(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType ? updatedDef : def)
       })
       setEditingColumn(null)
     }
@@ -194,14 +254,14 @@ const DefineShiftsPage = ({initialData = []}) => {
   const saveChanges = async () => {
     console.log('Saving changes:', shiftDefinitions)
 
-    // const currentDefinition = getCurrentDefinition()
-    // await deleteShifts({
-    //   variables: {
-    //     department: currentDefinition.department,
-    //     employeeType: 'Doctor',
-    //   },
-    // })
+    const currentDefinition = getCurrentDefinition()
 
+    const deleteResult = await deleteShifts({
+      variables: {
+        department: currentDefinition.department,
+        employeeType: currentDefinition.employeeType,
+      },
+    })
 
     for (const definition of shiftDefinitions) {
       for (const slot of definition.slots) {
@@ -210,7 +270,7 @@ const DefineShiftsPage = ({initialData = []}) => {
             variables: {
               input: {
                 type: slot.type,
-                employeeType: 'Doctor',
+                employeeType: definition.employeeType,
                 department: definition.department,
                 amount: amount,
                 qualification: skillLevel,
@@ -220,7 +280,6 @@ const DefineShiftsPage = ({initialData = []}) => {
         }
       }
     }
-    console.log('Changes saved')
   }
 
   const currentDefinition = getCurrentDefinition()
@@ -241,7 +300,19 @@ const DefineShiftsPage = ({initialData = []}) => {
             </SelectContent>
           </Select>
         </div>
-
+        <div className="flex-1">
+          <Label htmlFor="employeeType">Employee Type</Label>
+          <Select onValueChange={(value: EmployeeType) => setSelectedEmployeeType(value)} value={selectedEmployeeType}>
+            <SelectTrigger id="employeeType">
+              <SelectValue placeholder="Select Employee Type"/>
+            </SelectTrigger>
+            <SelectContent>
+              {employeeTypes.map(typ => (
+                <SelectItem key={typ} value={typ}>{typ}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="overflow-x-auto bg-white rounded-lg p-4 flex flex-col">
