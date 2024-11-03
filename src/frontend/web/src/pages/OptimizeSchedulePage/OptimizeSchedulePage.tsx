@@ -1,5 +1,7 @@
 import {Form, TextField, Submit, Label} from '@redwoodjs/forms'
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
+import { Button } from 'src/components/ui/button'
+import {Link, routes} from "@redwoodjs/router";
 
 const OptimizeSchedulePage = () => {
   const [scheduleSolution, setScheduleData] = useState<Object>(null)
@@ -118,9 +120,11 @@ const OptimizeSchedulePage = () => {
             </div>
 
             <div className="rw-button-group">
-              <Submit className="rw-button rw-button-blue">
-                Optimize Schedule
-              </Submit>
+              <Button className="rw-button rw-button-blue">
+                <Link to={routes.vysledneSmeny()}>
+                  Optimize Schedule
+                </Link>
+              </Button>
             </div>
           </Form>
         </div>
