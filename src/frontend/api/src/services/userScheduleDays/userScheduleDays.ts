@@ -47,9 +47,7 @@ export const UserScheduleDay: UserScheduleDayRelationResolvers = {
   user: (_obj, { root }) => {
     return db.userScheduleDay.findUnique({ where: { id: root?.id } }).user()
   },
-  shiftSlot: (_obj, { root }) => {
-    return db.userScheduleDay
-      .findUnique({ where: { id: root?.id } })
-      .shiftSlot()
+  Shift: (_obj, { root }) => {
+    return db.userScheduleDay.findUnique({ where: { id: root?.id } }).Shift()
   },
 }

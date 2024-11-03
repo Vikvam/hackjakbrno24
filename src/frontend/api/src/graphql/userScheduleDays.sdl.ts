@@ -10,8 +10,9 @@ export const schema = gql`
     reasonText: String!
     createdAt: DateTime!
     updatedAt: DateTime!
-    shiftSlotId: Int!
-    shiftSlot: ShiftSlot!
+    Shift: Shift
+    shiftId: Int
+    day: DateTime!
   }
 
   type Query {
@@ -25,7 +26,8 @@ export const schema = gql`
     preference: Int!
     reasonCode: Int!
     reasonText: String!
-    shiftSlotId: Int!
+    shiftId: Int
+    day: DateTime!
   }
 
   input UpdateUserScheduleDayInput {
@@ -34,7 +36,8 @@ export const schema = gql`
     preference: Int
     reasonCode: Int
     reasonText: String
-    shiftSlotId: Int
+    shiftId: Int
+    day: DateTime
   }
 
   type Mutation {

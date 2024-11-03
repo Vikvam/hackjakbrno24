@@ -1,10 +1,11 @@
 // import { Link, routes } from '@redwoodjs/router'
 import {Metadata, useMutation} from '@redwoodjs/web'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "src/components/ui/table";
 import {Form, SelectField} from "@redwoodjs/forms";
 import {CreateUserScheduleDayInput, CreateUserScheduleInput} from "types/graphql";
 import {Button} from 'src/components/ui/button';
+import {navigate, routes} from "@redwoodjs/router";
 
 const daysOfWeek = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So']
 const partsOfDay = ['Ranní', 'Odpolední', 'Večerní', 'Noční']
@@ -37,10 +38,10 @@ const registerPreference = (currPreferences, setter, dayIndex, partIndex, prefer
   console.log("Setting with", tmpPref)
   setter(tmpPref)
 }
-const PlanovaniSmenPage = () => {
+const PlanovaniSmenPage = (props) => {
   const [createSchedule] = useMutation(CREATE_SCHEDULE)
   const [createDaySchedule] = useMutation(CREATE_DAY_SCHEDULE)
-  let [preferences, setPreferences] = useState({})
+  let [preferences, setPreferences] = useState(null)
   const getNextWeekDates = () => {
 
     const today = new Date()
@@ -58,7 +59,7 @@ const PlanovaniSmenPage = () => {
       userId: 1, //TODO Hardcode
       schedule: date.toISOString(),
       month: date.getMonth(),
-      week: Math.round(date.getDay()/7),
+      week: Math.round(date.getDay() / 7),
       type: "weekly"
     }
     createSchedule({
@@ -69,6 +70,7 @@ const PlanovaniSmenPage = () => {
       console.log("Resp is", resp)
       let id = resp.data.createUserSchedule.id;
       console.assert(id)
+      let promises = []
       for (const dayIndex in preferences) {
         for (const partIndex in preferences[dayIndex]) {
           console.log(dayIndex, partIndex, preferences[dayIndex][partIndex])
@@ -78,35 +80,54 @@ const PlanovaniSmenPage = () => {
             day: date.toISOString(),
             preference: preferenceNum,
             reasonCode: 1,
-            dayPart: Number.parseInt(dayIndex),
+            // dayPart: Number.parseInt(dayIndex),
             userId: 1,
             reasonText: "None",
             userScheduleId: id,
-
           }
           console.log("Day data is", dayData)
-          createDaySchedule({
+          promises.push(createDaySchedule({
             variables: {
               input: dayData
             }
-          })
+          }))
         }
       }
+      Promise.all(promises).then((resp) => {
+        navigate(routes.planovaniSmenWithId({id: id}))
+      })
     })
   }
 
   const initialPreferences = () => {
-      let prefs: any = {}
-    for (let i = 0; i < daysOfWeek.length; i++) {
-      prefs[i] = {}
-      for (let j = 0; j < partsOfDay.length; j++) {
-        prefs[i][j] = {preference: 1}
+    let prefs: any = {}
+    if (!props.id) {
+      for (let i = 0; i < daysOfWeek.length; i++) {
+        prefs[i] = {}
+        for (let j = 0; j < partsOfDay.length; j++) {
+          prefs[i][j] = {preference: 3}
+        }
+      }
+    } else {
+      //TODO MOCK
+      for (let i = 0; i < daysOfWeek.length; i++) {
+        prefs[i] = {}
+        for (let j = 0; j < partsOfDay.length; j++) {
+          prefs[i][j] = {preference: Math.round(Math.random() * 5)}
+        }
       }
     }
     return prefs
   }
 
   const nextWeekDates = getNextWeekDates()
+  useEffect(() => {
+    setPreferences(initialPreferences())
+  }, []);
+
+  if (!preferences) {
+    return <div>Loading...</div>
+  }
 
   return (
     <Form>
@@ -128,17 +149,31 @@ const PlanovaniSmenPage = () => {
               <TableRow key={partIndex}>
                 <TableCell className="font-medium">{part}</TableCell>
                 {nextWeekDates.map((_, dayIndex) => (
-                  <TableCell key={dayIndex} className="text-center">
+                  <TableCell
+                    key={dayIndex}
+                    className="text-center"
+                    style={{
+                      backgroundColor: preferences[dayIndex][partIndex].preference === 0 ? 'darkgreen' :
+                        preferences[dayIndex][partIndex].preference === 1 ? 'green' :
+                          preferences[dayIndex][partIndex].preference === 2 ? 'lightgreen' :
+                            preferences[dayIndex][partIndex].preference === 3 ? 'yellow' :
+                              preferences[dayIndex][partIndex].preference === 4 ? 'orange' :
+                                'red'
+                    }}
+                  >
                     <SelectField name={"todo"} value={preferences[dayIndex][partIndex].preference} onChange={
                       (data) => {
                         registerPreference(preferences, setPreferences, dayIndex, partIndex, Number.parseInt(data.target.value))
-                      }}>
+                      }} hidden={props.id}>
                       <option value={1}>jako silne chcu</option>
                       <option value={2}>chcu</option>
                       <option value={3}>jedno jako</option>
                       <option value={4}>nechcu</option>
                       <option value={5}>jako vubec nechcu</option>
                     </SelectField>
+                    <div hidden={!props.id}>
+                      {preferences[dayIndex][partIndex].preference}
+                    </div>
                   </TableCell>
                 ))}
               </TableRow>
@@ -146,12 +181,14 @@ const PlanovaniSmenPage = () => {
           </TableBody>
         </Table>
       </div>
-      <Button onClick={uploadPreferences}>
-        Save
-      </Button>
-      <div>
-        {JSON.stringify(preferences)}
+      <div hidden={props.id}>
+        <Button onClick={uploadPreferences}>
+          Save
+        </Button>
       </div>
+      {/*<div>*/}
+      {/*  {JSON.stringify(preferences)}*/}
+      {/*</div>*/}
     </Form>
   )
 }

@@ -55,6 +55,7 @@ model UserScheduleDay {
   updatedAt      DateTime     @updatedAt
   Shift          Shift?       @relation(fields: [shiftId], references: [id])
   shiftId        Int?
+  day            DateTime
 }
 
 model Shift {
