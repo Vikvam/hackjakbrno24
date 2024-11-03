@@ -10,17 +10,29 @@ from src.solver.src.solution import *
 
 
 def doctors_mock(YEAR = 2024, MONTH = 11):
-    doctor_shifts = []
-    shift_availabilities = {}
+    doctor_shifts, nurse_shifts, rtg_assistant_shifts = [], [], []
+
     for date in calendar.Calendar().itermonthdates(YEAR, MONTH):
         if date.month != MONTH: continue
         if date.weekday() > 4:
             doctor_shifts.extend([
-                Shift(ShiftDatetype(date, ShiftType.WEEKEND_MORNING), Departments.RTG, 1, Qualifications.L2),
-                Shift(ShiftDatetype(date, ShiftType.WEEKEND_EVENING), Departments.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.RTG, 1, Qualifications.L2),
             ])
-            for shift_type in ShiftType.weekendrange():
-                shift_availabilities[ShiftDatetype(date, shift_type)] = None
+            nurse_shifts.extend([
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.RTG, 2),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.RTG, 1),
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.CT, 1),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.CT, 1),
+            ])
+            rtg_assistant_shifts.extend([
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.RTG, 1),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.RTG, 1),
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.CT, 1),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.CT, 1),
+            ])
         else:
             doctor_shifts.extend([
                 Shift(ShiftDatetype(date, ShiftType.MORNING), Departments.RTG, 1, Qualifications.L3),
@@ -30,15 +42,27 @@ def doctors_mock(YEAR = 2024, MONTH = 11):
                 Shift(ShiftDatetype(date, ShiftType.MORNING), Departments.RTG, 3, None),
                 Shift(ShiftDatetype(date, ShiftType.AFTERNOON), Departments.RTG, 2, None),
             ])
-            for shift_type in ShiftType.weekdayrange():
-                shift_availabilities[ShiftDatetype(date, shift_type)] = None
+            nurse_shifts.extend([
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.RTG, 2),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.RTG, 1),
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.CT, 1),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.CT, 1),
+            ])
+            rtg_assistant_shifts.extend([
+                Shift(ShiftDatetype(date, ShiftType.MORNING), Departments.RTG, 3),
+                Shift(ShiftDatetype(date, ShiftType.AFTERNOON), Departments.RTG, 2),
+                Shift(ShiftDatetype(date, ShiftType.OVERNIGHT), Departments.RTG, 1),
+                Shift(ShiftDatetype(date, ShiftType.MORNING), Departments.CT, 2),
+                Shift(ShiftDatetype(date, ShiftType.AFTERNOON), Departments.CT, 1),
+                Shift(ShiftDatetype(date, ShiftType.OVERNIGHT), Departments.CT, 1),
+            ])
 
     doctors = [
         Doctor(
             f"Doc{i}",
             {Departments.RTG: 3, Departments.CT: 3},
             {shift_type: 1 for shift_type in ShiftType},
-            {datetype: Availability.random() for datetype in shift_availabilities},
+            {datetype: Availability.random() for datetype in doctor_availabilities},
             Qualifications.L3,
             None,
             None

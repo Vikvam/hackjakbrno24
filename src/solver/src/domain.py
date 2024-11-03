@@ -66,7 +66,7 @@ class Shift:
     datetype: ShiftDatetype
     department: Departments
     amount: int
-    qualification: Optional[Qualifications]
+    qualification: Optional[Qualifications] = field(default=None)
 
     @property
     def date(self) -> date:
