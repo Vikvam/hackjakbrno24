@@ -1,9 +1,24 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "src/components/ui/table"
 import UserScheduleDay from "src/components/UserScheduleDayCell";
+import {CreateUserScheduleDayInput, FindUserScheduleDayQuery2} from "types/graphql";
+
+const FindCellForDayPart = (cells, dayIndex: number, part: number) => {
+  for (let i = 0; i < cells.length; i++) {
+    if (cells[i].dayPart === part) {
+      return cells[i]
+    }
+  }
+  return {id: 1}
+}
 
 export function WeeklyScheduleComponent(props) {
   const daysOfWeek = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So']
   const partsOfDay = ['Ranní', 'Odpolední', 'Večerní', 'Noční']
+  const cells = props.cells.map((cell) => cell.data.createUserScheduleDay)
+  console.log("Cells", cells)
+  if (!cells || cells.length === 0) {
+    return <div>Loading...</div>
+  }
 
   const getNextWeekDates = () => {
     const today = new Date()
@@ -36,7 +51,9 @@ export function WeeklyScheduleComponent(props) {
               <TableCell className="font-medium">{part}</TableCell>
               {nextWeekDates.map((_, dayIndex) => (
                 <TableCell key={dayIndex} className="text-center">
-                  <UserScheduleDay id={1} part={part} dayIndex={dayIndex} edit={props.edit}></UserScheduleDay>
+                  <UserScheduleDay id={
+                    FindCellForDayPart(cells, dayIndex, partIndex+1).id
+                  } part={part} dayIndex={dayIndex} edit={props.edit}></UserScheduleDay>
                 </TableCell>
               ))}
             </TableRow>

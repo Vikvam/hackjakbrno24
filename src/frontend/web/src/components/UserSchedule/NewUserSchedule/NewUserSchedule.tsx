@@ -46,7 +46,7 @@ const NewUserSchedule = () => {
         <h2 className="rw-heading rw-heading-secondary">New UserSchedule</h2>
       </header>
       <div className="rw-segment-main">
-        <UserScheduleForm onSave={onSave} loading={loading} error={error} />
+        <UserScheduleForm onSave={onSave} loading={loading} error={error} edit={true} />
       </div>
     </div>
   )
