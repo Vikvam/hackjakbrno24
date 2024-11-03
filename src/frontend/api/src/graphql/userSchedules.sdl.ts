@@ -3,6 +3,9 @@ export const schema = gql`
     id: Int!
     userId: Int!
     user: User!
+    type: String!
+    month: Int!
+    week: Int
     schedule: DateTime!
     createdAt: DateTime!
     updatedAt: DateTime!
@@ -16,19 +19,19 @@ export const schema = gql`
 
   input CreateUserScheduleInput {
     userId: Int!
+    type: String!
+    month: Int!
+    week: Int
     schedule: DateTime!
   }
 
   input UpdateUserScheduleInput {
     userId: Int
+    type: String
+    month: Int
+    week: Int
     schedule: DateTime
   }
-
-#  input CreateUserScheduleWithDays {
-#    userId: Int
-#    schedule: DateTime
-#    UserScheduleDay: [UserScheduleDay]
-#  }
 
   type Mutation {
     createUserSchedule(input: CreateUserScheduleInput!): UserSchedule!
@@ -38,6 +41,11 @@ export const schema = gql`
       input: UpdateUserScheduleInput!
     ): UserSchedule! @requireAuth
     deleteUserSchedule(id: Int!): UserSchedule! @requireAuth
-
   }
+
+  type Query {
+    userSchedulesByMonth(month: Int!): [UserSchedule!]! @requireAuth
+    userSchedulesByWeek(month: Int!, week: Int!): [UserSchedule!]! @requireAuth
+  }
+
 `

@@ -5,13 +5,14 @@ export const schema = gql`
     userSchedule: UserSchedule!
     userId: Int!
     user: User!
-    day: DateTime!
-    dayPart: Int!
     preference: Int!
     reasonCode: Int!
     reasonText: String!
     createdAt: DateTime!
     updatedAt: DateTime!
+    Shift: Shift
+    shiftId: Int
+    day: DateTime!
   }
 
   type Query {
@@ -22,21 +23,21 @@ export const schema = gql`
   input CreateUserScheduleDayInput {
     userScheduleId: Int!
     userId: Int!
-    day: DateTime!
-    dayPart: Int!
     preference: Int!
     reasonCode: Int!
     reasonText: String!
+    shiftId: Int
+    day: DateTime!
   }
 
   input UpdateUserScheduleDayInput {
     userScheduleId: Int
     userId: Int
-    day: DateTime
-    dayPart: Int
     preference: Int
     reasonCode: Int
     reasonText: String
+    shiftId: Int
+    day: DateTime
   }
 
   type Mutation {

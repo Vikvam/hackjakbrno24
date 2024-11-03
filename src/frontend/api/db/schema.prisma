@@ -18,8 +18,8 @@ generator client {
 // stem::string, attestation::string, qualification::string, RTG_preference::float?, CT_preference::float?
 model User {
   id              Int               @id @default(autoincrement())
-  name            String?           @unique
-  occupation      String            // doctor, nurse, rtgAssistant
+  name            String?
+  occupation      String // doctor, nurse, rtgAssistant
   stem            String?
   attestation     String?
   qualification   String?
@@ -27,7 +27,6 @@ model User {
   ct_preference   Float?
   UserSchedule    UserSchedule[]
   UserScheduleDay UserScheduleDay[]
-  ShiftSlot       ShiftSlot[]
 }
 
 model UserSchedule {
@@ -37,7 +36,6 @@ model UserSchedule {
   type            String            // monthly, weekly
   month           Int
   week            Int?
-  schedule        DateTime
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   UserScheduleDay UserScheduleDay[]
@@ -54,28 +52,19 @@ model UserScheduleDay {
   reasonText     String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-  shiftSlotId    Int          @unique
-  shiftSlot      ShiftSlot    @relation(fields: [shiftSlotId], references: [id])
+  Shift          Shift?       @relation(fields: [shiftId], references: [id])
+  shiftId        Int?
+  day            DateTime
 }
 
 model Shift {
-  id            Int         @id @default(autoincrement())
+  id            Int               @id @default(autoincrement())
   type          String
   employeeType  String
   department    String
   amount        Int
   qualification String
-  ShiftSlot     ShiftSlot[]
-}
-
-model ShiftSlot {
-  id              Int               @id @default(autoincrement())
-  date            DateTime
-  shift           Shift             @relation(fields: [shiftId], references: [id])
-  shiftId         Int
-  userId          Int
-  user            User              @relation(fields: [userId], references: [id])
-  scheduleDay     UserScheduleDay?
+  shiftSlot     UserScheduleDay[]
 }
 
 // model ShiftPlacement {

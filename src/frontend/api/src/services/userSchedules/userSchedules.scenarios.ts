@@ -5,16 +5,20 @@ export const standard = defineScenario<Prisma.UserScheduleCreateArgs>({
   userSchedule: {
     one: {
       data: {
-        schedule: '2024-11-01T22:37:15.559Z',
-        updatedAt: '2024-11-01T22:37:15.559Z',
-        user: { create: {} },
+        type: 'String',
+        month: 1686227,
+        schedule: '2024-11-03T01:48:12.148Z',
+        updatedAt: '2024-11-03T01:48:12.148Z',
+        user: { create: { occupation: 'String' } },
       },
     },
     two: {
       data: {
-        schedule: '2024-11-01T22:37:15.559Z',
-        updatedAt: '2024-11-01T22:37:15.559Z',
-        user: { create: {} },
+        type: 'String',
+        month: 7018034,
+        schedule: '2024-11-03T01:48:12.148Z',
+        updatedAt: '2024-11-03T01:48:12.148Z',
+        user: { create: { occupation: 'String' } },
       },
     },
   },

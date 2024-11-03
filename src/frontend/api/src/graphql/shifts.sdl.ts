@@ -12,6 +12,7 @@ export const schema = gql`
   type Query {
     shifts: [Shift!]! @requireAuth
     shift(id: Int!): Shift @requireAuth
+    shiftsByDepartmentAndEmployeeType(department: String!, employeeType: String!): [Shift!]! @requireAuth
   }
 
   input CreateShiftInput {
@@ -34,5 +35,8 @@ export const schema = gql`
     createShift(input: CreateShiftInput!): Shift! @requireAuth
     updateShift(id: Int!, input: UpdateShiftInput!): Shift! @requireAuth
     deleteShift(id: Int!): Shift! @requireAuth
+    deleteShifts(department: String!, employeeType: String!): Boolean! @requireAuth
   }
+
+
 `

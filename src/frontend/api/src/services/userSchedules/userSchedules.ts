@@ -5,7 +5,6 @@ import type {
 } from 'types/graphql'
 
 import { db } from 'src/lib/db'
-import {getCurrentUser} from "src/lib/auth";
 
 export const userSchedules: QueryResolvers['userSchedules'] = () => {
   return db.userSchedule.findMany()
@@ -40,6 +39,33 @@ export const deleteUserSchedule: MutationResolvers['deleteUserSchedule'] = ({
 }) => {
   return db.userSchedule.delete({
     where: { id },
+  })
+}
+
+export const userSchedulesByMonth = async ({ month }: { month: number }) => {
+  return db.userSchedule.findMany({
+    where: {
+      month: month,
+      type: 'monthly'
+    },
+    include: {
+      user: true,
+      UserScheduleDay: true
+    }
+  })
+}
+
+export const userSchedulesByWeek = async ({ month, week }: { month: number, week: number }) => {
+  return db.userSchedule.findMany({
+    where: {
+      month: month,
+      week: week,
+      type: 'weekly'
+    },
+    include: {
+      user: true,
+      UserScheduleDay: true
+    }
   })
 }
 
