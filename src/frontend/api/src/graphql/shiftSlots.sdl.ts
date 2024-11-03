@@ -2,10 +2,8 @@ export const schema = gql`
   type ShiftSlot {
     id: Int!
     date: DateTime!
-    type: String!
-    department: String!
-    amount: Int!
-    qualification: String!
+    shift: Shift!
+    shiftId: Int!
   }
 
   type Query {
@@ -15,18 +13,12 @@ export const schema = gql`
 
   input CreateShiftSlotInput {
     date: DateTime!
-    type: String!
-    department: String!
-    amount: Int!
-    qualification: String!
+    shiftId: Int!
   }
 
   input UpdateShiftSlotInput {
     date: DateTime
-    type: String
-    department: String
-    amount: Int
-    qualification: String
+    shiftId: Int
   }
 
   type Mutation {

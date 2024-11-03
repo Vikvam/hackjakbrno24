@@ -1,12 +1,14 @@
 // import { Link, routes } from '@redwoodjs/router'
-import { Metadata } from '@redwoodjs/web'
-import { useState } from 'react'
-import { Button } from "src/components/ui/button"
-import { Input } from "src/components/ui/input"
-import { Label } from "src/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "src/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "src/components/ui/table"
-import { Plus, Trash2, Edit2 } from 'lucide-react'
+import {Metadata} from '@redwoodjs/web'
+import {useState} from 'react'
+import {Button} from "src/components/ui/button"
+import {Input} from "src/components/ui/input"
+import {Label} from "src/components/ui/label"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "src/components/ui/select"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "src/components/ui/table"
+import {Plus, Trash2, Edit2} from 'lucide-react'
+import {useMutation} from '@redwoodjs/web'
+
 type Department = 'RTG' | 'CT'
 
 interface ShiftSlot {
@@ -24,10 +26,35 @@ interface ShiftDefinition {
 
 const departments: Department[] = ['RTG', 'CT']
 
+const CREATE_SHIFT_MUTATION_PAGE = gql`
+  mutation CreateShiftMutationProper($input: CreateShiftInput!) {
+    createShift(input: $input) {
+      id
+      type
+      employeeType
+      department
+      amount
+      qualification
+    }
+  }
+`
+
+// const DELETE_SHIFTS_MUTATION_PAGE = gql`
+//   mutation DeleteShiftsMutationPage($department: String!, $employeeType: String!) {
+//     deleteShifts(department: $department, employeeType: $employeeType) {
+//       count
+//     }
+//   }
+//`
+
 const DefineShiftsPage = ({initialData = []}) => {
- const [shiftDefinitions, setShiftDefinitions] = useState<ShiftDefinition[]>(initialData)
+  const [shiftDefinitions, setShiftDefinitions] = useState<ShiftDefinition[]>(initialData)
   const [selectedDepartment, setSelectedDepartment] = useState<Department>('RTG')
   const [editingColumn, setEditingColumn] = useState<{ index: number, name: string } | null>(null)
+  const [createShift] = useMutation(CREATE_SHIFT_MUTATION_PAGE)
+  // const [deleteShifts] = useMutation(DELETE_SHIFTS_MUTATION_PAGE)
+
+
   const getCurrentDefinition = () => {
     return shiftDefinitions.find(def => def.department === selectedDepartment) || {
       id: Date.now(),
@@ -35,8 +62,8 @@ const DefineShiftsPage = ({initialData = []}) => {
       skillLevels: ['L1'],
       slots: [{
         id: Date.now(),
-        type: 'New Shift',
-        amounts: { L1: 0 }
+        type: 'L',
+        amounts: {L1: 0}
       }]
     }
   }
@@ -47,16 +74,16 @@ const DefineShiftsPage = ({initialData = []}) => {
       const updatedSlots = currentDef.slots.map(slot =>
         slot.id === slotId
           ? {
-              ...slot,
-              ...(field === 'type'
-                ? { type: value }
-                : { amounts: { ...slot.amounts, [field]: parseInt(value) || 0 } }
-              )
-            }
+            ...slot,
+            ...(field === 'type'
+                ? {type: value}
+                : {amounts: {...slot.amounts, [field]: parseInt(value) || 0}}
+            )
+          }
           : slot
       )
 
-      const updatedDef = { ...currentDef, slots: updatedSlots }
+      const updatedDef = {...currentDef, slots: updatedSlots}
       return prevDefs.some(def => def.department === selectedDepartment)
         ? prevDefs.map(def => def.department === selectedDepartment ? updatedDef : def)
         : [...prevDefs, updatedDef]
@@ -107,7 +134,7 @@ const DefineShiftsPage = ({initialData = []}) => {
         skillLevels: [...currentDef.skillLevels, newColumnName],
         slots: currentDef.slots.map(slot => ({
           ...slot,
-          amounts: { ...slot.amounts, [newColumnName]: 0 }
+          amounts: {...slot.amounts, [newColumnName]: 0}
         }))
       }
 
@@ -126,8 +153,8 @@ const DefineShiftsPage = ({initialData = []}) => {
         ...currentDef,
         skillLevels: currentDef.skillLevels.filter(level => level !== columnName),
         slots: currentDef.slots.map(slot => {
-          const { [columnName]: _, ...rest } = slot.amounts
-          return { ...slot, amounts: rest }
+          const {[columnName]: _, ...rest} = slot.amounts
+          return {...slot, amounts: rest}
         })
       }
 
@@ -136,7 +163,7 @@ const DefineShiftsPage = ({initialData = []}) => {
   }
 
   const startEditingColumn = (index: number, name: string) => {
-    setEditingColumn({ index, name })
+    setEditingColumn({index, name})
   }
 
   const finishEditingColumn = () => {
@@ -150,10 +177,10 @@ const DefineShiftsPage = ({initialData = []}) => {
             index === editingColumn.index ? editingColumn.name : level
           ),
           slots: currentDef.slots.map(slot => {
-            const { [oldName]: oldValue, ...rest } = slot.amounts
+            const {[oldName]: oldValue, ...rest} = slot.amounts
             return {
               ...slot,
-              amounts: { ...rest, [editingColumn.name]: oldValue }
+              amounts: {...rest, [editingColumn.name]: oldValue}
             }
           })
         }
@@ -164,15 +191,36 @@ const DefineShiftsPage = ({initialData = []}) => {
     }
   }
 
-  const saveChanges = () => {
+  const saveChanges = async () => {
     console.log('Saving changes:', shiftDefinitions)
-    // Here you would typically send the data to your backend
-    // For example:
-    // fetch('/api/save-shift-definitions', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(shiftDefinitions)
+
+    // const currentDefinition = getCurrentDefinition()
+    // await deleteShifts({
+    //   variables: {
+    //     department: currentDefinition.department,
+    //     employeeType: 'Doctor',
+    //   },
     // })
+
+
+    for (const definition of shiftDefinitions) {
+      for (const slot of definition.slots) {
+        for (const [skillLevel, amount] of Object.entries(slot.amounts)) {
+          await createShift({
+            variables: {
+              input: {
+                type: slot.type,
+                employeeType: 'Doctor',
+                department: definition.department,
+                amount: amount,
+                qualification: skillLevel,
+              },
+            },
+          })
+        }
+      }
+    }
+    console.log('Changes saved')
   }
 
   const currentDefinition = getCurrentDefinition()
@@ -184,7 +232,7 @@ const DefineShiftsPage = ({initialData = []}) => {
           <Label htmlFor="department">Department</Label>
           <Select onValueChange={(value: Department) => setSelectedDepartment(value)} value={selectedDepartment}>
             <SelectTrigger id="department">
-              <SelectValue placeholder="Select department" />
+              <SelectValue placeholder="Select department"/>
             </SelectTrigger>
             <SelectContent>
               {departments.map(dept => (
@@ -198,9 +246,9 @@ const DefineShiftsPage = ({initialData = []}) => {
 
       <div className="overflow-x-auto bg-white rounded-lg p-4 flex flex-col">
         <div className="flex flex-row justify-end">
-        <Button onClick={addColumn} size="sm" className="relative top-0 right-0 m-2">
-          <Plus className="mr-2 h-4 w-4" />Add Column
-        </Button>
+          <Button onClick={addColumn} size="sm" className="relative top-0 right-0 m-2">
+            <Plus className="mr-2 h-4 w-4"/>Add Column
+          </Button>
         </div>
         <Table>
           <TableHeader>
@@ -211,7 +259,7 @@ const DefineShiftsPage = ({initialData = []}) => {
                   {editingColumn && editingColumn.index === index ? (
                     <Input
                       value={editingColumn.name}
-                      onChange={(e) => setEditingColumn({ ...editingColumn, name: e.target.value })}
+                      onChange={(e) => setEditingColumn({...editingColumn, name: e.target.value})}
                       onBlur={finishEditingColumn}
                       onKeyPress={(e) => e.key === 'Enter' && finishEditingColumn()}
                       autoFocus
@@ -226,7 +274,7 @@ const DefineShiftsPage = ({initialData = []}) => {
                         className="ml-2"
                         aria-label={`Edit ${level}`}
                       >
-                        <Edit2 className="h-4 w-4" />
+                        <Edit2 className="h-4 w-4"/>
                       </Button>
                       <Button
                         variant="ghost"
@@ -236,7 +284,7 @@ const DefineShiftsPage = ({initialData = []}) => {
                         className="ml-2"
                         aria-label={`Remove ${level}`}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4"/>
                       </Button>
                     </div>
                   )}
@@ -274,7 +322,7 @@ const DefineShiftsPage = ({initialData = []}) => {
                     disabled={currentDefinition.slots.length <= 1}
                     aria-label="Remove shift"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4"/>
                   </Button>
                 </TableCell>
               </TableRow>
@@ -282,7 +330,7 @@ const DefineShiftsPage = ({initialData = []}) => {
             <TableRow>
               <TableCell colSpan={currentDefinition.skillLevels.length + 2}>
                 <Button onClick={addShift} className="w-full">
-                  <Plus className="mr-2 h-4 w-4" /> Add Shift
+                  <Plus className="mr-2 h-4 w-4"/> Add Shift
                 </Button>
               </TableCell>
             </TableRow>
@@ -294,6 +342,7 @@ const DefineShiftsPage = ({initialData = []}) => {
         <Button onClick={saveChanges}>Save Changes</Button>
       </div>
     </div>
-  )}
+  )
+}
 
 export default DefineShiftsPage

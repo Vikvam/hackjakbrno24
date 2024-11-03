@@ -5,20 +5,30 @@ export const standard = defineScenario<Prisma.ShiftSlotCreateArgs>({
   shiftSlot: {
     one: {
       data: {
-        date: '2024-11-02T20:57:40.458Z',
-        type: 'String',
-        department: 'String',
-        amount: 8670838,
-        qualification: 'String',
+        date: '2024-11-02T23:14:07.220Z',
+        shift: {
+          create: {
+            type: 'String',
+            employeeType: 'String',
+            department: 'String',
+            amount: 5868567,
+            qualification: 'String',
+          },
+        },
       },
     },
     two: {
       data: {
-        date: '2024-11-02T20:57:40.458Z',
-        type: 'String',
-        department: 'String',
-        amount: 6419246,
-        qualification: 'String',
+        date: '2024-11-02T23:14:07.220Z',
+        shift: {
+          create: {
+            type: 'String',
+            employeeType: 'String',
+            department: 'String',
+            amount: 8767711,
+            qualification: 'String',
+          },
+        },
       },
     },
   },

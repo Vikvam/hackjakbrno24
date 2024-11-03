@@ -28,22 +28,16 @@ describe('shiftSlots', () => {
     expect(result).toEqual(scenario.shiftSlot.one)
   })
 
-  scenario('creates a shiftSlot', async () => {
+  scenario('creates a shiftSlot', async (scenario: StandardScenario) => {
     const result = await createShiftSlot({
       input: {
-        date: '2024-11-02T20:57:40.444Z',
-        type: 'String',
-        department: 'String',
-        amount: 2546700,
-        qualification: 'String',
+        date: '2024-11-02T23:14:07.201Z',
+        shiftId: scenario.shiftSlot.two.shiftId,
       },
     })
 
-    expect(result.date).toEqual(new Date('2024-11-02T20:57:40.444Z'))
-    expect(result.type).toEqual('String')
-    expect(result.department).toEqual('String')
-    expect(result.amount).toEqual(2546700)
-    expect(result.qualification).toEqual('String')
+    expect(result.date).toEqual(new Date('2024-11-02T23:14:07.201Z'))
+    expect(result.shiftId).toEqual(scenario.shiftSlot.two.shiftId)
   })
 
   scenario('updates a shiftSlot', async (scenario: StandardScenario) => {
@@ -52,10 +46,10 @@ describe('shiftSlots', () => {
     })) as ShiftSlot
     const result = await updateShiftSlot({
       id: original.id,
-      input: { date: '2024-11-03T20:57:40.444Z' },
+      input: { date: '2024-11-03T23:14:07.201Z' },
     })
 
-    expect(result.date).toEqual(new Date('2024-11-03T20:57:40.444Z'))
+    expect(result.date).toEqual(new Date('2024-11-03T23:14:07.201Z'))
   })
 
   scenario('deletes a shiftSlot', async (scenario: StandardScenario) => {

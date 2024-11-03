@@ -1,4 +1,4 @@
-// import { db } from 'api/src/lib/db'
+import { db } from 'api/src/lib/db'
 
 // Manually apply seeds via the `yarn rw prisma db seed` command.
 //
@@ -9,18 +9,43 @@
 
 export default async () => {
   try {
-    // Create your database records here! For example, seed some users:
-    //
-    // const users = [
-    //   { name: 'Alice', email: 'alice@redwoodjs.com' },
-    //   { name: 'Bob', email: 'bob@redwoodjs.com' },
-    // ]
-    //
-    // await db.user.createMany({ data: users })
+    const users = [
+      ...Array.from({ length: 30 }, (_, idx) => {
+        const rtg_preference = Math.round(Math.random() * 100) / 100
+        const qualification = ['L1', 'L2', 'L3'][Math.floor(Math.random() * 3)]
+        const stem = ['RTG', ''][Math.floor(Math.random() * 3)]
+        return {
+          name: `Doktor${idx + 1}`,
+          occupation: 'doctor',
+          qualification: qualification,
+          rtg_preference: rtg_preference,
+          ct_preference: 1 - rtg_preference,
+          stem: stem,
+          attestation: stem ? ['', 'RTG'][Math.floor(Math.random() * 2)] : '',
+        }
+      }),
+      ...Array.from({ length: 30 }, (_, idx) => {
+        const rtg_preference = Math.random()
+        return {
+          name: `Sestra${idx + 1}`,
+          occupation: 'nurse',
+          rtg_preference: rtg_preference,
+          ct_preference: 1 - rtg_preference,
+        }
+      }),
+      ...Array.from({ length: 30 }, (_, idx) => {
+        const rtg_preference = Math.random()
+        return {
+          name: `RTGAsistent${idx + 1}`,
+          occupation: 'rtgAssistant',
+          rtg_preference: rtg_preference,
+          ct_preference: 1 - rtg_preference,
+        }
+      }),
+    ]
 
-    console.info(
-      '\n  No seed data, skipping. See scripts/seed.ts to start seeding your database!\n'
-    )
+    await db.user.createMany({ data: users })
+    console.info('Seed data inserted successfully!', users.length)
   } catch (error) {
     console.error(error)
   }
