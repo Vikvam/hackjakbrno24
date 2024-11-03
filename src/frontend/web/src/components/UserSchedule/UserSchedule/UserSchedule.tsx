@@ -4,12 +4,15 @@ import type {
   FindUserScheduleById,
 } from 'types/graphql'
 
-import { Link, routes, navigate } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import type { TypedDocumentNode } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
+import {Link, routes, navigate} from '@redwoodjs/router'
+import {useMutation} from '@redwoodjs/web'
+import type {TypedDocumentNode} from '@redwoodjs/web'
+import {toast} from '@redwoodjs/web/toast'
 
-import { timeTag } from 'src/lib/formatters'
+import {timeTag} from 'src/lib/formatters'
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {SelectField} from "@redwoodjs/forms";
+import {useState} from "react";
 
 const DELETE_USER_SCHEDULE_MUTATION: TypedDocumentNode<
   DeleteUserScheduleMutation,
@@ -26,72 +29,55 @@ interface Props {
   userSchedule: NonNullable<FindUserScheduleById['userSchedule']>
 }
 
-const UserSchedule = ({ userSchedule }: Props) => {
-  const [deleteUserSchedule] = useMutation(DELETE_USER_SCHEDULE_MUTATION, {
-    onCompleted: () => {
-      toast.success('UserSchedule deleted')
-      navigate(routes.userSchedules())
-    },
-    onError: (error) => {
-      toast.error(error.message)
-    },
-  })
+const UserSchedule = ({userSchedule}: Props) => {
+  const daysOfWeek = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So']
+  const partsOfDay = ['Ranní', 'Odpolední', 'Večerní', 'Noční']
+  let [preferences, setPreferences] = useState({})
+    const getNextWeekDates = () => {
 
-  const onDeleteClick = (id: DeleteUserScheduleMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete userSchedule ' + id + '?')) {
-      deleteUserSchedule({ variables: { id } })
+      const today = new Date()
+      return Array(7).fill(null).map((_, i) => {
+        const date = new Date(today)
+        date.setDate(today.getDate() + i)
+        return date
+      })
     }
-  }
+  const nextWeekDates = getNextWeekDates()
 
   return (
-    <>
-      <div className="rw-segment">
-        <header className="rw-segment-header">
-          <h2 className="rw-heading rw-heading-secondary">
-            UserSchedule {userSchedule.id} Detail
-          </h2>
-        </header>
-        <table className="rw-table">
-          <tbody>
-            <tr>
-              <th>Id</th>
-              <td>{userSchedule.id}</td>
-            </tr>
-            <tr>
-              <th>User id</th>
-              <td>{userSchedule.userId}</td>
-            </tr>
-            <tr>
-              <th>Schedule</th>
-              <td>{timeTag(userSchedule.schedule)}</td>
-            </tr>
-            <tr>
-              <th>Created at</th>
-              <td>{timeTag(userSchedule.createdAt)}</td>
-            </tr>
-            <tr>
-              <th>Updated at</th>
-              <td>{timeTag(userSchedule.updatedAt)}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <nav className="rw-button-group">
-        <Link
-          to={routes.editUserSchedule({ id: userSchedule.id })}
-          className="rw-button rw-button-blue"
-        >
-          Edit
-        </Link>
-        <button
-          type="button"
-          className="rw-button rw-button-red"
-          onClick={() => onDeleteClick(userSchedule.id)}
-        >
-          Delete
-        </button>
-      </nav>
-    </>
+    <div className="container mx-auto py-10">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Část dne</TableHead>
+            {nextWeekDates.map((date, index) => (
+              <TableHead key={index} className="text-center">
+                {daysOfWeek[date.getDay()]}<br/>
+                {date.getDate()}.{date.getMonth() + 1}.
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {partsOfDay.map((part, partIndex) => (
+            <TableRow key={partIndex}>
+              <TableCell className="font-medium">{part}</TableCell>
+              {nextWeekDates.map((_, dayIndex) => (
+                <TableCell key={dayIndex} className="text-center">
+                  <SelectField name={"todo"}>
+                    <option value={1}>jako silne chcu</option>
+                    <option value={2}>chcu</option>
+                    <option value={3}>jedno jako</option>
+                    <option value={4}>nechcu</option>
+                    <option value={5}>jako vubec nechcu</option>
+                  </SelectField>
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }
 

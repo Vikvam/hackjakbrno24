@@ -23,11 +23,11 @@ interface ShiftFormProps {
 }
 
 const CREATE_SHIFT_MUTATION_FORM = gql`
-  mutation CreateShiftMutation($input: CreateShiftInput!) {
+  mutation CreateShiftMutationForm($input: CreateShiftInput!) {
     createShift(input: $input) {
       id
-      employeeType
       type
+      employeeType
       department
       amount
       qualification
