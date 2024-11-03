@@ -67,7 +67,197 @@ def create_doctor(
     )
 
 
-def problem_mock(year=2024, month=11, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
+def problem_mock_doctors(year=2024, month=11, week=44, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
+    if seed is not None:
+        random.seed(seed)
+
+    doctor_shifts = []
+    doctor_datetypes = []
+
+    for date in calendar.Calendar().itermonthdates(year, month):
+        if date.month != month:
+            continue
+
+        if date.weekday() > 4 and type == "monthly":
+            doctor_shifts.extend([
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.RTG, 1, Qualifications.L2),
+            ])
+            doctor_datetypes.extend([
+                ShiftDatetype(date, ShiftType.MORNING_12),
+                ShiftDatetype(date, ShiftType.EVENING_12)
+            ])
+        elif type == "weekly" and date.isocalendar().week == week:
+            doctor_shifts.extend([
+                Shift(ShiftDatetype(date, ShiftType.MORNING), Departments.RTG, 1, Qualifications.L3),
+                Shift(ShiftDatetype(date, ShiftType.MORNING), Departments.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.AFTERNOON), Departments.RTG, 1, Qualifications.L2),
+                # Shift(ShiftDatetype(date, ShiftType.OVERNIGHT), Departments.RTG, 1, Qualifications.L2),
+                Shift(ShiftDatetype(date, ShiftType.MORNING), Departments.RTG, 3, None),
+                Shift(ShiftDatetype(date, ShiftType.AFTERNOON), Departments.RTG, 2, None),
+            ])
+            doctor_datetypes.extend([
+                ShiftDatetype(date, ShiftType.MORNING),
+                ShiftDatetype(date, ShiftType.AFTERNOON),
+                # ShiftDatetype(date, ShiftType.OVERNIGHT)
+            ])
+
+    doctors = []
+    for d in range(30):
+        rtg_preference = random.random() * 100 // 100
+        ct_preference = 1 - rtg_preference
+        qualification = random.choice([i for i in Qualifications])
+        doctors.append(
+            create_doctor(
+                f"Doctor {d}",
+                {Departments.RTG: rtg_preference, Departments.CT: ct_preference},
+                shift_amounts={
+                    ShiftType.MORNING: 10,
+                    ShiftType.AFTERNOON: 10,
+                    ShiftType.OVERNIGHT: random.choice((2, 3)),
+                    ShiftType.MORNING_12: random.choice((0, 2, 4)),
+                    ShiftType.EVENING_12: random.choice((0, 2, 2)),
+                },
+                shift_availability={
+                    **{datetype: Availability.random() for datetype in doctor_datetypes},
+                },
+                stem=random.choice([i for i in Trunks]) if qualification > Qualifications.L1 else None,
+                specialization=random.choice([i for i in Trunks]) if qualification > Qualifications.L2 else None,
+                qualification=qualification,
+            )
+        )
+
+    assignments = [i for i in weekend_assignments]
+    assignments.extend([
+        ShiftAssignment(shift, doctors[i % len(doctors)])
+        for i, shift in enumerate(doctor_shifts)
+        for _ in range(shift.amount)
+    ])
+
+    return doctors, doctor_shifts, assignments
+
+
+def problem_mock_nurses(year=2024, month=11, week=44, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
+    if seed is not None:
+        random.seed(seed)
+
+    nurse_shifts = []
+    nurse_datetypes = []
+
+    for date in calendar.Calendar().itermonthdates(year, month):
+        if date.month != month:
+            continue
+        if type == "weekly" and  date.isocalendar().week != week:
+            continue
+        nurse_shifts.extend([
+            Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.RTG, 2),
+            Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.RTG, 1),
+            Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.CT, 1),
+            Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.CT, 1),
+        ])
+        nurse_datetypes.extend([
+            ShiftDatetype(date, ShiftType.MORNING_12),
+            ShiftDatetype(date, ShiftType.EVENING_12)
+        ])
+
+    nurses = []
+    for n in range(30):
+        rtg_preference = random.random() * 100 // 100
+        ct_preference = 1 - rtg_preference
+        nurses.append(
+            create_employee(
+                f"Nurse {n}",
+                {Departments.RTG: rtg_preference, Departments.CT: ct_preference},
+                shift_amounts={
+                    ShiftType.MORNING_12: random.choice((0, 2, 4)),
+                    ShiftType.EVENING_12: random.choice((0, 2, 2)),
+                },
+                shift_availability={
+                    **{datetype: Availability.random() for datetype in nurse_datetypes},
+                },
+            )
+        )
+
+    assignments = [i for i in weekend_assignments]
+    assignments.extend([
+        ShiftAssignment(shift, nurses[i % len(nurses)])
+        for i, shift in enumerate(nurse_shifts)
+        for _ in range(shift.amount)
+    ])
+
+    return nurses, nurse_shifts, assignments
+
+
+def problem_mock_rtg_assistants(year=2024, month=11, week=44, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
+    if seed is not None:
+        random.seed(seed)
+
+    rtg_assistant_shifts = []
+    rtg_assistant_datetypes = []
+
+    for date in calendar.Calendar().itermonthdates(year, month):
+        if date.month != month: continue
+        if date.weekday() > 4 and type == "monthly":
+            rtg_assistant_shifts.extend([
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.RTG, 1),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.RTG, 1),
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.CT, 1),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.CT, 1),
+            ])
+            rtg_assistant_datetypes.extend([
+                ShiftDatetype(date, ShiftType.MORNING_12),
+                ShiftDatetype(date, ShiftType.EVENING_12),
+                # ShiftDatetype(date, ShiftType.OVERNIGHT)
+            ])
+        elif type == "weekly" and date.isocalendar().week == week:
+            rtg_assistant_shifts.extend([
+                Shift(ShiftDatetype(date, ShiftType.MORNING), Departments.RTG, 3),
+                Shift(ShiftDatetype(date, ShiftType.AFTERNOON), Departments.RTG, 2),
+                # Shift(ShiftDatetype(date, ShiftType.OVERNIGHT), Departments.RTG, 1),
+                Shift(ShiftDatetype(date, ShiftType.MORNING), Departments.CT, 2),
+                Shift(ShiftDatetype(date, ShiftType.AFTERNOON), Departments.CT, 1),
+                # Shift(ShiftDatetype(date, ShiftType.OVERNIGHT), Departments.CT, 1),
+            ])
+            rtg_assistant_datetypes.extend([
+                ShiftDatetype(date, ShiftType.MORNING),
+                ShiftDatetype(date, ShiftType.AFTERNOON),
+                # ShiftDatetype(date, ShiftType.OVERNIGHT)
+            ])
+
+    rtg_assistants = []
+    for r in range(15):
+        rtg_preference = random.random() * 100 // 100
+        ct_preference = 1 - rtg_preference
+        rtg_assistants.append(
+            create_employee(
+                f"RTG Assistant {r}",
+                {Departments.RTG: rtg_preference, Departments.CT: ct_preference},
+                shift_amounts={
+                    ShiftType.MORNING: 10,
+                    ShiftType.AFTERNOON: 10,
+                    ShiftType.OVERNIGHT: random.choice((2, 3)),
+                    ShiftType.MORNING_12: random.choice((0, 2, 4)),
+                    ShiftType.EVENING_12: random.choice((0, 2, 2)),
+                },
+                shift_availability={
+                    **{datetype: Availability.random() for datetype in rtg_assistant_datetypes},
+                },
+            )
+        )
+
+    assignments = [i for i in weekend_assignments]
+    assignments.extend([
+        ShiftAssignment(shift, rtg_assistants[i % len(rtg_assistants)])
+        for i, shift in enumerate(rtg_assistant_shifts)
+        for _ in range(shift.amount)
+    ])
+
+    return rtg_assistants, rtg_assistant_shifts, assignments
+
+
+def problem_mock(year=2024, month=11, week=44, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
     if seed is not None: random.seed(seed)
 
     doctor_shifts, nurse_shifts, rtg_assistant_shifts = [], [], []

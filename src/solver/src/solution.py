@@ -22,7 +22,7 @@ def solve(problem: ShiftsSchedule, spent_limit=Duration(minutes=1, seconds=30)):
         termination_config=TerminationConfig(
             spent_limit=spent_limit,
             unimproved_spent_limit=Duration(
-                minutes=5
+                minutes=2
             ),
         )
     )

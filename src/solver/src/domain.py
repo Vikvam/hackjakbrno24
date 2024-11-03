@@ -85,7 +85,7 @@ class Shift:
         return self.datetype.end_datetime
 
     def __repr__(self):
-        return "<" + str(self.datetype) + ">"
+        return "<" + str(self.datetype) + " " + str(self.type.name) + ">"
 
     def __sub__(self, other):
         return self.date - other.date
