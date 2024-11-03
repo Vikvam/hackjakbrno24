@@ -9,13 +9,10 @@ export const schema = gql`
     ShiftSlot: [ShiftSlot]!
   }
 
-  type BatchPayload {
-    count: Int!
-  }
-
   type Query {
     shifts: [Shift!]! @requireAuth
     shift(id: Int!): Shift @requireAuth
+    shiftsByDepartmentAndEmployeeType(department: String!, employeeType: String!): [Shift!]! @requireAuth
   }
 
   input CreateShiftInput {

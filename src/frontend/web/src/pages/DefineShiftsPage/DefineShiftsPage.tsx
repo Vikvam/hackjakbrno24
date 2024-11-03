@@ -1,6 +1,6 @@
 // import { Link, routes } from '@redwoodjs/router'
-import {Metadata} from '@redwoodjs/web'
-import {useState} from 'react'
+import {Metadata, useQuery} from '@redwoodjs/web'
+import {useEffect, useState} from 'react'
 import {Button} from "src/components/ui/button"
 import {Input} from "src/components/ui/input"
 import {Label} from "src/components/ui/label"
@@ -50,6 +50,19 @@ const CREATE_SHIFT_MUTATION_PAGE = gql`
 //   }
 //`
 
+const GET_SHIFT_DEFINITION = gql`
+  query shiftsByDepartmentAndEmployeeType($department: String!, $employeeType: String!) {
+    shiftsByDepartmentAndEmployeeType(department: $department, employeeType: $employeeType) {
+      id
+      type
+      employeeType
+      department
+      amount
+      qualification
+    }
+  }
+`
+
 const DefineShiftsPage = ({initialData = []}) => {
   const [shiftDefinitions, setShiftDefinitions] = useState<ShiftDefinition[]>(initialData)
   const [selectedDepartment, setSelectedDepartment] = useState<Department>('RTG')
@@ -58,15 +71,59 @@ const DefineShiftsPage = ({initialData = []}) => {
   const [createShift] = useMutation(CREATE_SHIFT_MUTATION_PAGE)
   // const [deleteShifts] = useMutation(DELETE_SHIFTS_MUTATION_PAGE)
 
+  const {data, loading, error} = useQuery(GET_SHIFT_DEFINITION, {
+    variables: {department: selectedDepartment, employeeType: selectedEmployeeType},
+  })
+
+  useEffect(() => {
+    if (data && data.shiftsByDepartmentAndEmployeeType) {
+      const skillLevelsSet = new Set<string>()
+      const slotsMap = new Map<number, ShiftSlot>()
+
+      data.shiftsByDepartmentAndEmployeeType.forEach(shift => {
+        skillLevelsSet.add(shift.qualification)
+        if (!slotsMap.has(shift.id)) {
+          slotsMap.set(shift.id, {
+            id: shift.id,
+            type: shift.type,
+            amounts: {}
+          })
+        }
+        slotsMap.get(shift.id)!.amounts[shift.qualification] = shift.amount
+      })
+
+      const skillLevels = Array.from(skillLevelsSet)
+      const slots = Array.from(slotsMap.values()).map(slot => {
+        skillLevels.forEach(level => {
+          if (!(level in slot.amounts)) {
+            slot.amounts[level] = 0
+          }
+        })
+        return slot
+      })
+
+      const shiftData = [{
+        id: Date.now(),
+        department: selectedDepartment,
+        employeeType: selectedEmployeeType,
+        skillLevels,
+        slots
+      }]
+
+      setShiftDefinitions(shiftData)
+    }
+  }, [data])
 
   const getCurrentDefinition = () => {
-    return shiftDefinitions.find(def => def.department === selectedDepartment && def.employeeType == selectedEmployeeType) || {
+
+    const def = shiftDefinitions.find(def => def.department === selectedDepartment && def.employeeType === selectedEmployeeType) || {
       id: Date.now(),
       department: selectedDepartment,
       employeeType: selectedEmployeeType,
       skillLevels: [],
       slots: []
     }
+    return def
   }
 
   const handleInputChange = (slotId: number, field: 'type' | string, value: string) => {
