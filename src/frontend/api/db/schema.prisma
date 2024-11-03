@@ -33,10 +33,9 @@ model UserSchedule {
   id              Int               @id @default(autoincrement())
   userId          Int
   user            User              @relation(fields: [userId], references: [id])
-  type            String // monthly, weekly
+  type            String            // monthly, weekly
   month           Int
   week            Int?
-  schedule        DateTime
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   UserScheduleDay UserScheduleDay[]

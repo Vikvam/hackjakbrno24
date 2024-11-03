@@ -21,3 +21,4 @@ class ShiftConstraintConfiguration:
 
     # Soft constraints
     department_desired: HardMediumSoftScore = HardMediumSoftScore.of_soft(50)
+    unfair_assignments: HardMediumSoftScore = HardMediumSoftScore.of_soft(1)

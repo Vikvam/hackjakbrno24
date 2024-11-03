@@ -10,19 +10,19 @@ const SmenaPage = () => {
         Plánování služeb
       </h1>
       <div className="flex flex-col gap-4 sm:flex-row">
-        <Link to={routes.editUserSchedule({id: 1, type: 'weekly'})}>
+        <Link to={routes.planovaniSmen()}>
           {/*TODO HARDCODED USER*/}
           <Button size="lg" className="text-lg px-6 py-3">
             Běžné směny
           </Button>
         </Link>
-        <Link to={routes.editUserSchedule({id: 1, type: 'monthly'})}>
+        <Link to={routes.planovaniSmen({id: "dadwdawd"})}>
           {/*TODO HARDCODED USER*/}
           <Button size="lg" className="text-lg px-6 py-3">
             Noční a víkendové služby
           </Button>
         </Link>
-        <Link to={routes.userSchedule({id: 1})}>
+        <Link to={routes.planovaniSmenWithId({id: 1})}>
           <Button size="lg" variant="outline" className="text-lg px-6 py-3">
             Současný plán
           </Button>

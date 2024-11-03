@@ -1,16 +1,18 @@
 from timefold.solver import (
     SolverFactory,
     SolutionManager,
+    heuristic
 )
 from timefold.solver.config import SolverConfig, ScoreDirectorFactoryConfig, TerminationConfig, Duration
-from timefold.solver.score import ScoreExplanation
+from timefold.solver.score import ScoreExplanation, ScoreAnalysis
+import json
 
 from src.solver.src.domain import *
 from src.solver.src.enums import *
 from src.solver.src.constraints import define_constraints
 
 
-def solve(problem: ShiftsSchedule):
+def solve(problem: ShiftsSchedule, spent_limit=Duration(minutes=1, seconds=30)):
     solver_config = SolverConfig(
         solution_class=ShiftsSchedule,
         entity_class_list=[ShiftAssignment],
@@ -18,14 +20,10 @@ def solve(problem: ShiftsSchedule):
             constraint_provider_function=define_constraints
         ),
         termination_config=TerminationConfig(
-            spent_limit=Duration(
-                minutes=0,
-                seconds=30,
-            ),
+            spent_limit=spent_limit,
             unimproved_spent_limit=Duration(
-                seconds=10
+                minutes=5
             ),
-            # best_score_limit=HardMediumSoftScore.of(0, 0, 0),
         )
     )
 

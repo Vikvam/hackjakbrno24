@@ -42,14 +42,14 @@ class ShiftType(Enum):
     MORNING = (time(7, 0), time(15, 30))
     AFTERNOON = (time(10, 30), time(19, 0))
     OVERNIGHT = (time(18, 0), time(7, 0))
-    WEEKEND_MORNING = (time(6, 0), time(19, 0))
-    WEEKEND_EVENING = (time(18, 0), time(7, 0))
+    MORNING_12 = (time(6, 0), time(19, 0))
+    EVENING_12 = (time(18, 0), time(7, 0))
 
     @staticmethod
     def weekendrange():
         return iter([
-            ShiftType.WEEKEND_MORNING,
-            ShiftType.WEEKEND_EVENING
+            ShiftType.MORNING_12,
+            ShiftType.EVENING_12
         ])
 
     @staticmethod
@@ -66,13 +66,13 @@ class ShiftType(Enum):
             case "MORNING": return cls.MORNING
             case "AFTERNOON": return cls.AFTERNOON
             case "OVERNIGHT": return cls.OVERNIGHT
-            case "WEEKEND_MORNING": return cls.WEEKEND_MORNING
-            case "WEEKEND_EVENING": return cls.WEEKEND_EVENING
+            case "WEEKEND_MORNING": return cls.MORNING_12
+            case "WEEKEND_EVENING": return cls.EVENING_12
             case _: raise ValueError("Invalid ShiftType provided.")
 
     @property
     def is_overnight(self):
-        return self == ShiftType.OVERNIGHT or self == ShiftType.WEEKEND_EVENING
+        return self == ShiftType.OVERNIGHT or self == ShiftType.EVENING_12
 
 
 class Departments(Enum):

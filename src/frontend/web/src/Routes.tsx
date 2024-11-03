@@ -37,6 +37,7 @@ const Routes = () => {
         <Route path="/search-users" page={SearchUsersPage} name="searchUsers"/>
 
         <Route path="/smena" page={SmenaPage} name="smena"/>
+        <Route path="/" page={SmenaPage} name="home"/>
         <Route path="/define-users" page={DefineUsersPage} name="defineUsers"/>
         <Set wrap={ScaffoldLayout} title="Users" titleTo="users" buttonLabel="New User" buttonTo="newUser">
           <Route path="/users/new" page={UserNewUserPage} name="newUser"/>
@@ -54,6 +55,14 @@ const Routes = () => {
           <Route notfound page={NotFoundPage}/>
         </Set>
       </Set>
+      <Set wrap={ScaffoldLayout} title="UserSchedules" titleTo="userSchedules" buttonLabel="New UserSchedule"
+           buttonTo="newUserSchedule">
+        <Route path="/user-schedules/new" page={UserScheduleNewUserSchedulePage} name="newUserSchedule"/>
+        <Route path="/user-schedules/{id:Int}/{type:String}/edit" page={UserScheduleEditUserSchedulePage} name="editUserSchedule"/>
+        <Route path="/user-schedules/{id:Int}" page={UserScheduleUserSchedulePage} name="userSchedule"/>
+        <Route path="/user-schedules" page={UserScheduleUserSchedulesPage} name="userSchedules"/>
+      </Set>
+      <Route notfound page={NotFoundPage}/>
     </Router>
   )
 }

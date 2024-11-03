@@ -79,7 +79,7 @@ class TestConstraints:
             basic_test_employee
         )
         assignment2 = ShiftAssignment(
-            create_shift(date(2024, 11, 3), ShiftType.WEEKEND_EVENING),
+            create_shift(date(2024, 11, 3), ShiftType.EVENING_12),
             basic_test_employee
         )
         (constraint_verifier.verify_that(at_least_12h_rest)

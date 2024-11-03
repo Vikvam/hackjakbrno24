@@ -38,10 +38,11 @@ def no_overlapping_shifts(constraint_factory: ConstraintFactory) -> Constraint:
     return (
         constraint_factory
         .for_each_unique_pair(ShiftAssignment,
-            Joiners.equal(lambda assignment: assignment.employee),
+            Joiners.equal(lambda a: a.employee),
+            # Join on overlapping time periods
             Joiners.overlapping(
-                lambda assignment: assignment.shift.start_datetime,
-                lambda assignment: assignment.shift.end_datetime
+                lambda a: a.shift.start_datetime,
+                lambda a: a.shift.end_datetime
             )
         )
         .penalize(ShiftConstraintConfiguration.is_illegal)
