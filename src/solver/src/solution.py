@@ -3,7 +3,8 @@ from timefold.solver import (
     SolutionManager,
 )
 from timefold.solver.config import SolverConfig, ScoreDirectorFactoryConfig, TerminationConfig, Duration
-from timefold.solver.score import ScoreExplanation
+from timefold.solver.score import ScoreExplanation, ScoreAnalysis
+import json
 
 from src.solver.src.domain import *
 from src.solver.src.enums import *
@@ -19,11 +20,11 @@ def solve(problem: ShiftsSchedule):
         ),
         termination_config=TerminationConfig(
             spent_limit=Duration(
-                minutes=10,
+                minutes=15,
                 seconds=30,
             ),
             unimproved_spent_limit=Duration(
-                seconds=10
+                minutes=3
             ),
             # best_score_limit=HardMediumSoftScore.of(0, 0, 0),
         )

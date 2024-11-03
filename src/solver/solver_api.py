@@ -8,17 +8,23 @@ from backend.models import DoctorModel, ShiftModel
 
 app = FastAPI()
 
+
 class SolverInput(BaseModel):
     employees: list[DoctorModel]
     shifts: list[ShiftModel]
 
-jobs = {}
+
+jobs = {
+    0:
+}
+
 
 def solver_task(job_id, input_data: SolverInput):
     # Simulate a long-running computation
     time.sleep(10)  # Simulate delay
     result = {"message": f"Hello from Python! Received: {input_data.model_dump_json()}"}
     jobs[job_id] = result
+
 
 @app.post("/solve")
 def solve(input: SolverInput, background_tasks: BackgroundTasks):
@@ -27,6 +33,7 @@ def solve(input: SolverInput, background_tasks: BackgroundTasks):
     jobs[job_id] = {"status": "Job is running"}
     background_tasks.add_task(solver_task, job_id, input)
     return {"job_id": job_id}
+
 
 @app.get("/result/{job_id}")
 def get_result(job_id: str):
@@ -38,6 +45,8 @@ def get_result(job_id: str):
     else:
         return job
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

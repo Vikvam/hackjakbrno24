@@ -93,7 +93,11 @@ class Shift:
 
 @dataclass(frozen=True)
 class Employee:
-    name: Annotated[str, PlanningId]
+    id: Annotated[UUID, PlanningId] = field(
+        default_factory=uuid4,
+        init=False
+    )
+    name: str
     department_preference: dict[Departments, float]
     shift_amounts: dict[ShiftType, int]
     shift_availability: dict[ShiftDatetype, Availability]
