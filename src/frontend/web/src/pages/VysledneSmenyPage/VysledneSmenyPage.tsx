@@ -142,30 +142,26 @@ const VysledneSmenyPage = (props) => {
               <TableRow key={partIndex}>
                 <TableCell className="font-medium">{part}</TableCell>
                 {nextWeekDates.map((_, dayIndex) => (
-                  <TableCell
-                    key={dayIndex}
-                    className="text-center"
-                  >
+                  <TableCell key={dayIndex} className="text-center">
                     <ul>
-
-                    {example_json_entries[part].map((_, index) => (
-                      <Link to={routes.user({ id: user.id })} key={index}>
-                        <li className="flex items-center space-x-4 rounded-md p-2 hover:bg-accent">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
-                          <User className="h-6 w-6 text-primary-foreground"/>
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-sm font-medium leading-none">{}</p>
-                          <div className="flex flex-row space-x-2">
-                            <p className="text-sm text-muted-foreground">{user.attestation}</p>
-                            <p className="text-sm text-muted-foreground">{user.qualification}</p>
-                            <p className="text-sm text-muted-foreground">{user.occupation}</p>
-                          </div>
-                        </div>
-                      </li>
-                    </Link>
-                    ))}
-                      </ul>
+                      {example_json_entries[part][dayIndex]?.map((entry, index) => (
+                        <Link to={routes.user({ id: user.id })} key={index}>
+                          <li className="flex items-center space-x-4 rounded-md p-2 hover:bg-accent">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
+                              <User className="h-6 w-6 text-primary-foreground" />
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-sm font-medium leading-none">{entry.name}</p>
+                              <div className="flex flex-row space-x-2">
+                                <p className="text-sm text-muted-foreground">{entry.shift_type}</p>
+                                <p className="text-sm text-muted-foreground">{entry.occupation}</p>
+                                <p className="text-sm text-muted-foreground">{entry.department}</p>
+                              </div>
+                            </div>
+                          </li>
+                        </Link>
+                      ))}
+                    </ul>
                   </TableCell>
                 ))}
               </TableRow>
