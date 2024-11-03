@@ -8,6 +8,7 @@ import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import type { TypedDocumentNode } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
+import PlanovaniSmenPage from "src/pages/PlanovaniSmenPage/PlanovaniSmenPage";
 
 import {} from 'src/lib/formatters'
 
@@ -88,6 +89,7 @@ const User = ({ user }: Props) => {
           </tbody>
         </table>
       </div>
+      <PlanovaniSmenPage id={false}></PlanovaniSmenPage>
       <nav className="rw-button-group">
         <Link
           to={routes.editUser({ id: user.id })}

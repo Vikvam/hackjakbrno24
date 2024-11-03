@@ -1,8 +1,8 @@
 // import { Link, routes } from '@redwoodjs/router'
 import {Metadata, useMutation} from '@redwoodjs/web'
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "src/components/ui/table";
-import {Form, SelectField} from "@redwoodjs/forms";
+import {Form, SelectField, TextField} from "@redwoodjs/forms";
 import {CreateUserScheduleDayInput, CreateUserScheduleInput} from "types/graphql";
 import {Button} from 'src/components/ui/button';
 import {navigate, routes} from "@redwoodjs/router";
@@ -42,8 +42,8 @@ const PlanovaniSmenPage = (props) => {
   const [createSchedule] = useMutation(CREATE_SCHEDULE)
   const [createDaySchedule] = useMutation(CREATE_DAY_SCHEDULE)
   let [preferences, setPreferences] = useState(null)
-  const getNextWeekDates = () => {
 
+  const getNextWeekDates = () => {
     const today = new Date()
     return Array(7).fill(null).map((_, i) => {
       const date = new Date(today)
@@ -161,18 +161,40 @@ const PlanovaniSmenPage = (props) => {
                                 'red'
                     }}
                   >
-                    <SelectField name={"todo"} value={preferences[dayIndex][partIndex].preference} onChange={
-                      (data) => {
-                        registerPreference(preferences, setPreferences, dayIndex, partIndex, Number.parseInt(data.target.value))
-                      }} hidden={props.id}>
-                      <option value={1}>jako silne chcu</option>
-                      <option value={2}>chcu</option>
-                      <option value={3}>jedno jako</option>
-                      <option value={4}>nechcu</option>
-                      <option value={5}>jako vubec nechcu</option>
-                    </SelectField>
-                    <div hidden={!props.id}>
-                      {preferences[dayIndex][partIndex].preference}
+                    <div className="flex flex-col gap-2">
+                      <SelectField
+                        name={`preference-${dayIndex}-${partIndex}`}
+                        value={preferences[dayIndex][partIndex].preference}
+                        onChange={(data) => {
+                          registerPreference(preferences, setPreferences, dayIndex, partIndex, Number.parseInt(data.target.value))
+                        }}
+                        hidden={props.id}
+                      >
+                        <option value={1}>jako silne chcu</option>
+                        <option value={2}>chcu</option>
+                        <option value={3}>jedno jako</option>
+                        <option value={4}>nechcu</option>
+                        <option value={5}>jako vubec nechcu</option>
+                      </SelectField>
+
+                      {preferences[dayIndex][partIndex].preference === 5 && !props.id && (
+                        <TextField
+                          name={`reason-${dayIndex}-${partIndex}`}
+                          placeholder="Důvod..."
+                          className="mt-1 p-1 text-sm border rounded"
+                          onChange={(e) => {
+                            let tmpPref = {...preferences}
+                            tmpPref[dayIndex][partIndex].reasonText = e.target.value
+                            setPreferences(tmpPref)
+                          }}
+                          value={preferences[dayIndex][partIndex].reasonText || ''}
+                        />
+                      )}
+
+                      <div hidden={!props.id}>
+                        {preferences[dayIndex][partIndex].preference}
+                        <p>{preferences[dayIndex][partIndex].reasonText} </p>
+                      </div>
                     </div>
                   </TableCell>
                 ))}

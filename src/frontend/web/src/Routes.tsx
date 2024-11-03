@@ -11,11 +11,11 @@ import {Set, Router, Route} from '@redwoodjs/router'
 
 import ScaffoldLayout from 'src/layouts/ScaffoldLayout'
 import MainLayout from "src/layouts/MainLayout/MainLayout";
-
 const Routes = () => {
   return (
     <Router>
       <Route path="/vysledne-smeny" page={VysledneSmenyPage} name="vysledneSmeny" />
+      <Route path="/optimize-schedule" page={OptimizeSchedulePage} name="optimizeSchedule" />
       <Set wrap={ScaffoldLayout} title="ShiftSlots" titleTo="shiftSlots" buttonLabel="New ShiftSlot"
            buttonTo="newShiftSlot">
         <Route path="/shift-slots/new" page={ShiftSlotNewShiftSlotPage} name="newShiftSlot"/>
