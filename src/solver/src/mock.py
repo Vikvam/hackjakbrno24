@@ -67,7 +67,7 @@ def create_doctor(
     )
 
 
-def problem_mock_doctors(year=2024, month=11, week=44, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
+def problem_mock_doctors(year=2024, month=11, week=45, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
     if seed is not None:
         random.seed(seed)
 
@@ -139,7 +139,7 @@ def problem_mock_doctors(year=2024, month=11, week=44, weekend_assignments: tupl
     return doctors, doctor_shifts, assignments
 
 
-def problem_mock_nurses(year=2024, month=11, week=44, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
+def problem_mock_nurses(year=2024, month=11, week=45, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
     if seed is not None:
         random.seed(seed)
 
@@ -149,18 +149,19 @@ def problem_mock_nurses(year=2024, month=11, week=44, weekend_assignments: tuple
     for date in calendar.Calendar().itermonthdates(year, month):
         if date.month != month:
             continue
-        if type == "weekly" and  date.isocalendar().week != week:
-            continue
-        nurse_shifts.extend([
-            Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.RTG, 2),
-            Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.RTG, 1),
-            Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.CT, 1),
-            Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.CT, 1),
-        ])
-        nurse_datetypes.extend([
-            ShiftDatetype(date, ShiftType.MORNING_12),
-            ShiftDatetype(date, ShiftType.EVENING_12)
-        ])
+        if date.weekday() > 4 and type == "monthly":
+            ...
+        if type == "weekly" and date.isocalendar().week == week:
+            nurse_shifts.extend([
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.RTG, 2),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.RTG, 1),
+                Shift(ShiftDatetype(date, ShiftType.MORNING_12), Departments.CT, 1),
+                Shift(ShiftDatetype(date, ShiftType.EVENING_12), Departments.CT, 1),
+            ])
+            nurse_datetypes.extend([
+                ShiftDatetype(date, ShiftType.MORNING_12),
+                ShiftDatetype(date, ShiftType.EVENING_12)
+            ])
 
     nurses = []
     for n in range(30):
@@ -190,7 +191,7 @@ def problem_mock_nurses(year=2024, month=11, week=44, weekend_assignments: tuple
     return nurses, nurse_shifts, assignments
 
 
-def problem_mock_rtg_assistants(year=2024, month=11, week=44, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
+def problem_mock_rtg_assistants(year=2024, month=11, week=45, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
     if seed is not None:
         random.seed(seed)
 
@@ -257,7 +258,7 @@ def problem_mock_rtg_assistants(year=2024, month=11, week=44, weekend_assignment
     return rtg_assistants, rtg_assistant_shifts, assignments
 
 
-def problem_mock(year=2024, month=11, week=44, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
+def problem_mock(year=2024, month=11, week=45, weekend_assignments: tuple[ShiftAssignment] = (), type="monthly", seed=None):
     if seed is not None: random.seed(seed)
 
     doctor_shifts, nurse_shifts, rtg_assistant_shifts = [], [], []

@@ -16,6 +16,7 @@ from src.solver.src.constraint_config import *
 @constraint_provider
 def define_constraints(constraint_factory: ConstraintFactory) -> list[Constraint]:
     return [
+        all_shifts_assigned(constraint_factory),
         no_overlapping_shifts(constraint_factory),
         at_least_12h_rest(constraint_factory),
         at_least_36h_rest_weekly(constraint_factory),
@@ -28,6 +29,16 @@ def define_constraints(constraint_factory: ConstraintFactory) -> list[Constraint
         availability_desired(constraint_factory),
         department_desired(constraint_factory)
     ]
+
+
+def all_shifts_assigned(constraint_factory: ConstraintFactory) -> Constraint:
+    return (
+        constraint_factory
+        .for_each(ShiftAssignment)
+        .filter(lambda assignment: assignment.employee is None)
+        .penalize(ShiftConstraintConfiguration.is_illegal)
+        .as_constraint("all_shifts_assigned")
+    )
 
 
 def no_overlapping_shifts(constraint_factory: ConstraintFactory) -> Constraint:

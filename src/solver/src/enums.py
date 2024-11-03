@@ -41,9 +41,9 @@ class Qualifications(Enum):
 class ShiftType(Enum):
     MORNING = (time(7, 0), time(15, 30))
     AFTERNOON = (time(10, 30), time(19, 0))
+    EVENING_12 = (time(18, 0), time(7, 0))
     OVERNIGHT = (time(18, 0), time(7, 0))
     MORNING_12 = (time(6, 0), time(19, 0))
-    EVENING_12 = (time(18, 0), time(7, 0))
 
     @staticmethod
     def weekendrange():
