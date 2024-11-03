@@ -60,20 +60,6 @@ const SHIFTS = {
 
 export default async () => {
   try {
-    const month = 11
-    const year = 2024
-    const daysInMonth = new Date(year, month, 0).getDate()
-
-    const createdWeekdayShifts = await db.shift.createMany({
-      data: SHIFTS.weekday
-    })
-    const createdOvernightShifts = await db.shift.createMany({
-      data: SHIFTS.overnight
-    })
-    const createdWeekendShifts = await db.shift.createMany({
-      data: SHIFTS.weekend
-    })
-
     const users = [
       ...Array.from({length: 30}, (_, idx) => {
         const rtg_preference = Math.round(Math.random() * 100) / 100
@@ -111,68 +97,68 @@ export default async () => {
 
     await db.user.createMany({data: users})
 
-    for (let u = 0; u < users.length; u++) {
-      const user = users[u];
-      const monthlySchedule = await db.userSchedule.create({
-        data: {
-          id: u * 2,
-          userId: u,
-          type: 'monthly',
-          month: month,
-        }
-      })
-      const weeklySchedule = await db.userSchedule.create({
-        data: {
-          id: u * 2 + 1,
-          userId: u,
-          type: 'weekly',
-          month: month,
-          week: 1,
-        }
-      })
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(year, month - 1, day)
-        const preferences = []
-        const isWeekend = date.getDay() === 0 || date.getDay() === 6
-        if (isWeekend) {
-          for (const shift in createdWeekendShifts) {
-            preferences.push({
-              userScheduleId: monthlySchedule.id,
-              userId: user,
-              preference: Math.floor(Math.random() * 5),
-              reasonCode: 0,
-              reasonText: '',
-              shiftId: shift.id,
-            })
-          }
-        }
-        else {
-          for (const shift in createdWeekdayShifts) {
-            preferences.push({
-              userScheduleId: weeklySchedule.id,
-              userId: u,
-              preference: Math.floor(Math.random() * 5),
-              reasonCode: 0,
-              reasonText: '',
-              shiftId: shift.id,
-            })
-          }
-          for (const shift in createdOvernightShifts) {
-            preferences.push({
-              userScheduleId: monthlySchedule.id,
-              userId: u,
-              preference: Math.floor(Math.random() * 5),
-              reasonCode: 0,
-              reasonText: '',
-              shiftId: shift.id,
-            })
-          }
-        }
-        await db.userScheduleDay.createMany({
-          data: preferences
-        })
-      }
-    }
+    // for (let u = 0; u < users.length; u++) {
+    //   const user = users[u];
+    //   const monthlySchedule = await db.userSchedule.create({
+    //     data: {
+    //       id: u * 2,
+    //       userId: u,
+    //       type: 'monthly',
+    //       month: month,
+    //     }
+    //   })
+    //   const weeklySchedule = await db.userSchedule.create({
+    //     data: {
+    //       id: u * 2 + 1,
+    //       userId: u,
+    //       type: 'weekly',
+    //       month: month,
+    //       week: 1,
+    //     }
+    //   })
+    //   for (let day = 1; day <= daysInMonth; day++) {
+    //     const date = new Date(year, month - 1, day)
+    //     const preferences = []
+    //     const isWeekend = date.getDay() === 0 || date.getDay() === 6
+    //     if (isWeekend) {
+    //       for (const shift in createdWeekendShifts) {
+    //         preferences.push({
+    //           userScheduleId: monthlySchedule.id,
+    //           userId: user,
+    //           preference: Math.floor(Math.random() * 5),
+    //           reasonCode: 0,
+    //           reasonText: '',
+    //           shiftId: shift.id,
+    //         })
+    //       }
+    //     }
+    //     else {
+    //       for (const shift in createdWeekdayShifts) {
+    //         preferences.push({
+    //           userScheduleId: weeklySchedule.id,
+    //           userId: u,
+    //           preference: Math.floor(Math.random() * 5),
+    //           reasonCode: 0,
+    //           reasonText: '',
+    //           shiftId: shift.id,
+    //         })
+    //       }
+    //       for (const shift in createdOvernightShifts) {
+    //         preferences.push({
+    //           userScheduleId: monthlySchedule.id,
+    //           userId: u,
+    //           preference: Math.floor(Math.random() * 5),
+    //           reasonCode: 0,
+    //           reasonText: '',
+    //           shiftId: shift.id,
+    //         })
+    //       }
+    //     }
+    //     await db.userScheduleDay.createMany({
+    //       data: preferences
+    //     })
+    //   }
+    // }
 
     console.info('Seed data inserted successfully!', createdUsers.length)
   } catch (error) {
