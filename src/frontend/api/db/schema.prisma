@@ -18,7 +18,7 @@ generator client {
 // stem::string, attestation::string, qualification::string, RTG_preference::float?, CT_preference::float?
 model User {
   id              Int               @id @default(autoincrement())
-  name            String?
+  name            String?           @unique
   occupation      String            // doctor, nurse, rtgAssistant
   stem            String?
   attestation     String?
@@ -27,6 +27,7 @@ model User {
   ct_preference   Float?
   UserSchedule    UserSchedule[]
   UserScheduleDay UserScheduleDay[]
+  ShiftSlot       ShiftSlot[]
 }
 
 model UserSchedule {
@@ -34,6 +35,8 @@ model UserSchedule {
   userId          Int
   user            User              @relation(fields: [userId], references: [id])
   type            String            // monthly, weekly
+  month           Int
+  week            Int?
   schedule        DateTime
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -46,13 +49,13 @@ model UserScheduleDay {
   userSchedule   UserSchedule @relation(fields: [userScheduleId], references: [id])
   userId         Int
   user           User         @relation(fields: [userId], references: [id])
-  day            DateTime
-  dayPart        Int
   preference     Int
   reasonCode     Int
   reasonText     String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  shiftSlotId    Int          @unique
+  shiftSlot      ShiftSlot    @relation(fields: [shiftSlotId], references: [id])
 }
 
 model Shift {
@@ -66,10 +69,13 @@ model Shift {
 }
 
 model ShiftSlot {
-  id      Int      @id @default(autoincrement())
-  date    DateTime
-  shift   Shift    @relation(fields: [shiftId], references: [id])
-  shiftId Int
+  id              Int               @id @default(autoincrement())
+  date            DateTime
+  shift           Shift             @relation(fields: [shiftId], references: [id])
+  shiftId         Int
+  userId          Int
+  user            User              @relation(fields: [userId], references: [id])
+  scheduleDay     UserScheduleDay?
 }
 
 // model ShiftPlacement {

@@ -4,7 +4,7 @@ import type {
   UpdateUserScheduleMutationVariables,
 } from 'types/graphql'
 
-import { navigate, routes } from '@redwoodjs/router'
+import {navigate, routes, useParams} from '@redwoodjs/router'
 import type {
   CellSuccessProps,
   CellFailureProps,
@@ -54,6 +54,8 @@ export const Failure = ({ error }: CellFailureProps) => (
 export const Success = ({
   userSchedule,
 }: CellSuccessProps<EditUserScheduleById>) => {
+  const urlParams = useParams()
+
   const [updateUserSchedule, { loading, error }] = useMutation(
     UPDATE_USER_SCHEDULE_MUTATION,
     {
@@ -78,7 +80,7 @@ export const Success = ({
     <div className="rw-segment">
       <header className="rw-segment-header">
         <h2 className="rw-heading rw-heading-secondary">
-          Edit UserSchedule {userSchedule?.id}
+          Edit {urlParams.type} UserSchedule {userSchedule?.id}
         </h2>
       </header>
       <div className="rw-segment-main">
